@@ -5,3 +5,4 @@ vendor/
 res/
 *.obj
 compile_commands.json
+.cache/
