@@ -1,30 +1,32 @@
 
 CC = gcc
 CFLAGS = -Wall -g -Iinclude
-LDFLAGS = -lglfw -lm -lvulkan -l:lib$(LIBNAME).a
+LDFLAGS = -lglfw -lm -lvulkan -l$(LIBNAME)
 
 SRC = $(wildcard src/*.c) 
 OBJ = $(SRC:.c=.o)
 
-LIBNAME = vulkan-render
+LIBNAME = blahV
 EXENAME = main
 
 all: run
 
-bin/obj/%.o: %.c 
+%.o: %.c 
+	mkdir -p bin
+	mkdir -p bin/obj
 	$(CC) -c $< -o $@ $(CFLAGS) 
 
-lib/$(LIBNAME): $(OBJ)
+lib/lib$(LIBNAME): $(OBJ)
 	mkdir -p lib
-	ar cr lib/$(LIBNAME).a $(OBJ)
+	ar cr lib/lib$(LIBNAME).a $(OBJ)
 	rm -f $(OBJ)
 
-install: lib/$(LIBNAME)
-	cp lib/$(LIBNAME).a /usr/local/lib/ 
+install: lib/lib$(LIBNAME)
+	cp lib/lib$(LIBNAME).a /usr/local/lib/ 
 	cp -r include/$(LIBNAME) /usr/local/include/
 
 uninstall:
-	rm -rf /usr/local/lib/$(LIBNAME).a 
+	rm -rf /usr/local/lib/lib$(LIBNAME).a 
 	rm -rf /usr/local/include/$(LIBNAME)/
 
 example: install 
@@ -33,15 +35,15 @@ example: install
 
 run: example
 	./compile.sh
-	./$(EXENAME)
+	./bin/$(EXENAME)
 
 cloc:
 	cloc . --exclude-dir=vendor,build,third_party,bin
 
 clean:
-	rm -rf lib $(OBJ)
+	rm -rf lib $(OBJ) bin
 
-.PHONY all clean install uninstall 
+
 
 
 
