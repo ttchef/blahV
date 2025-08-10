@@ -11,6 +11,7 @@ typedef enum {
     BLV_UNDEFINED = 1,
     BLV_OK = 0,
     BLV_ERROR = -1,
+    BLV_GLFW_ERROR = -2,
 } BLV_Result;
 
 typedef struct {
@@ -27,15 +28,15 @@ extern blvErrorInfo blv_error_last;
 extern bool blv_error_log_enable;
 extern blv_pfn_error_callback blv_error_callback;
 
-#define DA_SET_ERROR(code, msg, ...) \
+#define BLV_SET_ERROR(code, msg, ...) \
     do { \
-        if (da_error_log_enable) { \
-            da_last_error.error_code = code; \
-            da_last_error.function_name = __func__; \
-            da_last_error.file_name = __FILE__; \
-            da_last_error.line_number = __LINE__; \
-            snprintf(da_last_error.message, sizeof(da_last_error.message), msg, ##__VA_ARGS__); \
-            if (da_error_callback) da_error_callback(&da_last_error); \
+        if (blv_error_log_enable) { \
+            blv_error_last.error_code = code; \
+            blv_error_last.function_name = __func__; \
+            blv_error_last.file_name = __FILE__; \
+            blv_error_last.line_number = __LINE__; \
+            snprintf(blv_error_last.message, sizeof(blv_error_last.message), msg, ##__VA_ARGS__); \
+            if (blv_error_callback) blv_error_callback(&blv_error_last); \
         } \
     } while(0)
 

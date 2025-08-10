@@ -7,7 +7,7 @@ blvErrorInfo blv_error_last = {0};
 bool blv_error_log_enable = true;
 blv_pfn_error_callback blv_error_callback = blv_error_default_callback;
 
-void blv_default_error_callback(const blvErrorInfo* error) {
+void blv_error_default_callback(const blvErrorInfo* error) {
     printf("Error in %s:%d (%s): %s - %s\n",
         error->file_name,
         error->line_number,
@@ -22,6 +22,7 @@ const char* blv_error_string(BLV_Result result) {
         case BLV_UNDEFINED:             return "Undefinied";
         case BLV_OK:                    return "Success";
         case BLV_ERROR:                 return "General Error";
+        case BLV_GLFW_ERROR:            return "Glfw Error";
         default:                        return "Unkown Error";
     }
 }
