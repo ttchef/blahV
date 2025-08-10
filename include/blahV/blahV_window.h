@@ -18,8 +18,15 @@ typedef struct {
     bool should_quit;
 } blvWindow;
 
-BLV_Result blvWindowInit(blvContext* context, uint32_t width, uint32_t height, const char* name);
+typedef struct {
+    uint32_t width;
+    uint32_t height;
+    const char* name;
+} blvWindowCreateInfo;
+
+BLV_Result blvWindowInit(blvContext* context, blvWindowCreateInfo* createInfo);
 bool blvWindowShouldQuit(blvContext* context);
+void blvWindowPollEvents();
 BLV_Result blvWindowDeinit(blvContext* context);
 
 #endif
