@@ -23,6 +23,7 @@ const char* blv_error_string(BLV_Result result) {
         case BLV_OK:                    return "Success";
         case BLV_ERROR:                 return "General Error";
         case BLV_GLFW_ERROR:            return "Glfw Error";
+        case BLV_VULKAN_INSTANCE_ERROR: return "Vulkan Instance Error";
         default:                        return "Unkown Error";
     }
 }

@@ -12,6 +12,7 @@ typedef enum {
     BLV_OK = 0,
     BLV_ERROR = -1,
     BLV_GLFW_ERROR = -2,
+    BLV_VULKAN_INSTANCE_ERROR = -3,
 } BLV_Result;
 
 typedef struct {

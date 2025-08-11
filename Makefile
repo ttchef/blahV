@@ -9,7 +9,7 @@ OBJ = $(SRC:.c=.o)
 LIBNAME = blahV
 EXENAME = main
 
-all: run
+all: lib/lib$(LIBNAME)
 
 %.o: %.c 
 	mkdir -p bin
@@ -29,7 +29,7 @@ uninstall:
 	rm -rf /usr/local/lib/lib$(LIBNAME).a 
 	rm -rf /usr/local/include/$(LIBNAME)/
 
-example: install 
+example:
 	./compile.sh
 	$(CC) $(CFLAGS) example.c -o bin/$(EXENAME) $(LDFLAGS)
 
