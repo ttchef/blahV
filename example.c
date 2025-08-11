@@ -1,4 +1,5 @@
 
+#include "blahV/blahV_context.h"
 #include "blahV/blahV_window.h"
 #include <stdio.h>
 
@@ -11,6 +12,11 @@ int main() {
     blvWindowCreateInfo window_create_info = {800, 600, "Hello World"};
     if (blvWindowInit(&blv_context, &window_create_info) != BLV_OK) {
         fprintf(stderr, "Failed to create a blv window!\n");
+        return -1;
+    }
+
+    if (blvVulkanInit(&blv_context) != BLV_OK) {
+        fprintf(stderr, "Failed to init blv vulkan!\n");
         return -1;
     }
 

@@ -45,6 +45,32 @@ BLV_Result blvDeviceInstanceInit(blvContext *context) {
 
 BLV_Result blvDevicePhysicalDeviceInit(blvContext *context) {
     
+    uint32_t num_devices;
+    vkEnumeratePhysicalDevices(context->device.instance, &num_devices, NULL);
+    if (num_devices == 0) {
+        BLV_SET_ERROR(BLV_VULKAN_PHYSICAL_DEVICE_ERROR, "Failed to find fitting GPU");
+        context->device.physical_device = 0;
+        return BLV_ERROR;
+    }
+
+    VkPhysicalDevice physical_devices[num_devices];
+    vkEnumeratePhysicalDevices(context->device.instance, &num_devices, physical_devices);
+    
+    BLV_LOG(BLV_LOG_DEBUG, "Found %d GPUs\n", num_devices);
+
+    for (uint32_t i = 0; i < num_devices; i++) {
+        VkPhysicalDeviceProperties device_properties = {0};
+        vkGetPhysicalDeviceProperties(physical_devices[i], &device_properties);
+        BLV_LOG(BLV_LOG_DEBUG, "Found GPU: %s\n", device_properties.deviceName);
+    }
+
+    VkPhysicalDeviceProperties selected_device_properties = {0};
+    vkGetPhysicalDeviceProperties(physical_devices[0], &selected_device_properties);
+    context->device.physical_device = physical_devices[0];
+    context->device.physical_device_properties = selected_device_properties;
+
+    BLV_LOG(BLV_LOG_DEBUG, "Will select %s GPU\n", selected_device_properties.deviceName);
+
     return BLV_OK;
 }
 

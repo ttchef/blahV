@@ -19,12 +19,22 @@ void blv_error_default_callback(const blvErrorInfo* error) {
 
 const char* blv_error_string(BLV_Result result) {
     switch (result) {
-        case BLV_UNDEFINED:             return "Undefinied";
-        case BLV_OK:                    return "Success";
-        case BLV_ERROR:                 return "General Error";
-        case BLV_GLFW_ERROR:            return "Glfw Error";
-        case BLV_VULKAN_INSTANCE_ERROR: return "Vulkan Instance Error";
-        default:                        return "Unkown Error";
+        case BLV_UNDEFINED:                         return "Undefinied";
+        case BLV_OK:                                return "Success";
+        case BLV_ERROR:                             return "General Error";
+        case BLV_GLFW_ERROR:                        return "Glfw Error";
+        case BLV_VULKAN_INSTANCE_ERROR:             return "Vulkan Instance Error";
+        case BLV_VULKAN_PHYSICAL_DEVICE_ERROR:      return "Vulkan Physical Device Error";
+        default:                                    return "Unkown Error";
+    }
+}
+
+const char* blv_error_log_level_string(BLV_Log_Level level) {
+    switch (level) {
+        case BLV_LOG_DEBUG:     return "BLV_DEBUG";
+        case BLV_LOG_WARNING:   return "BLV_WARNING";
+        case BLV_LOG_ERROR:     return "BLV_ERROR";
+        default:                return "BLV_NOT_SPECIFIED_LOG_LEVEL";
     }
 }
 

@@ -13,7 +13,14 @@ typedef enum {
     BLV_ERROR = -1,
     BLV_GLFW_ERROR = -2,
     BLV_VULKAN_INSTANCE_ERROR = -3,
+    BLV_VULKAN_PHYSICAL_DEVICE_ERROR = -4,
 } BLV_Result;
+
+typedef enum {
+    BLV_LOG_DEBUG = 0,
+    BLV_LOG_WARNING = 1,
+    BLV_LOG_ERROR = 2,
+} BLV_Log_Level;
 
 typedef struct {
     BLV_Result error_code;
@@ -29,6 +36,14 @@ extern blvErrorInfo blv_error_last;
 extern bool blv_error_log_enable;
 extern blv_pfn_error_callback blv_error_callback;
 
+void blv_error_default_callback(const blvErrorInfo* error);
+void blv_error_set_callback(blv_pfn_error_callback callback);
+void blv_error_enable_log(bool enable);
+const blvErrorInfo* blv_error_get_last();
+void blv_error_clear_last();
+const char* blv_error_string(BLV_Result result);
+const char* blv_error_log_level_string(BLV_Log_Level level);
+
 #define BLV_SET_ERROR(code, msg, ...) \
     do { \
         if (blv_error_log_enable) { \
@@ -41,11 +56,16 @@ extern blv_pfn_error_callback blv_error_callback;
         } \
     } while(0)
 
-void blv_error_default_callback(const blvErrorInfo* error);
-void blv_error_set_callback(blv_pfn_error_callback callback);
-void blv_error_enable_log(bool enable);
-const blvErrorInfo* blv_error_get_last();
-void blv_error_clear_last();
-const char* blv_error_string(BLV_Result result);
+
+#define BLV_LOG(log_level, msg, ...) \
+    do { \
+        if (blv_error_enable_log) { \
+            printf("[%s] ", blv_error_log_level_string(log_level)); \
+            printf(msg, ##__VA_ARGS__); \
+        } \
+    } while(0)
+
+
 
 #endif // BLAHV_LOG_H
+
