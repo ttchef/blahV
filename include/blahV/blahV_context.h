@@ -3,12 +3,14 @@
 #define BLAHV_CONTEXT_H
 
 #include "blahV/blahV_log.h"
+#include "blahV/blahV_queue.h"
 #include "blahV_window.h"
 #include "blahV_device.h"
 
 struct blvContext {
     blvWindow window;
     blvDevice device;
+    blvQueue graphics_queue;
 };
 
 BLV_Result blvVulkanInit(blvContext* context);

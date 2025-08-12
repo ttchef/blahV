@@ -11,7 +11,20 @@ BLV_Result blvVulkanInit(blvContext *context) {
 
 void blvDeinit(blvContext *context) {
     
+    vkDeviceWaitIdle(context->device.logical_device);
+    vkDestroyDevice(context->device.logical_device, NULL);
 
+    if (context->device.debug_callback) {
+        PFN_vkDestroyDebugUtilsMessengerEXT vkDestroyDebugUtilsMessengerEXT;
+        vkDestroyDebugUtilsMessengerEXT = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(context->device.instance, "vkDestroyDebugUtilsMessengerEXT");
+        if (!vkDestroyDebugUtilsMessengerEXT) {
+            BLV_SET_ERROR(BLV_VULKAN_FUNCTION_LOAD_ERROR, "Failed to load vkDestroyDebugUtilsMessengerEXT");
+        }
+
+        vkDestroyDebugUtilsMessengerEXT(context->device.instance, context->device.debug_callback, NULL);
+    }
+
+    vkDestroyInstance(context->device.instance, NULL);
 
     blvWindowDeinit(context);
 }

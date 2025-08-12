@@ -30,7 +30,7 @@ VkDebugUtilsMessengerEXT blvRegisterDebugCallback(VkInstance instance) {
     PFN_vkCreateDebugUtilsMessengerEXT vkCreateDebugUtilsMessengerEXT;
     vkCreateDebugUtilsMessengerEXT = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
     if (!vkCreateDebugUtilsMessengerEXT) {
-        BLV_SET_ERROR(BLV_VULKAN_FUNCTION_LOAD_ERROR, "vkCreateDebugUtilsMessengerEXT is NULL");
+        BLV_SET_ERROR(BLV_VULKAN_FUNCTION_LOAD_ERROR, "Failed to load vkCreateDebugUtilsMessengerEXT");
         return 0;
     }
 
@@ -215,17 +215,17 @@ BLV_Result blvDevicePhysicalDeviceInit(blvContext *context) {
 BLV_Result blvDeviceLogicalDeviceInit(blvContext *context) {
 
     // Get queue families
-    uint32_t num_queque_families = 0;
-    vkGetPhysicalDeviceQueueFamilyProperties(context->device.physical_device, &num_queque_families, NULL);
-    VkQueueFamilyProperties queue_families[num_queque_families];
-    vkGetPhysicalDeviceQueueFamilyProperties(context->device.physical_device, &num_queque_families, NULL);   
+    uint32_t num_queue_families = 0;
+    vkGetPhysicalDeviceQueueFamilyProperties(context->device.physical_device, &num_queue_families, NULL);
+    VkQueueFamilyProperties queue_families[num_queue_families];
+    vkGetPhysicalDeviceQueueFamilyProperties(context->device.physical_device, &num_queue_families, queue_families);   
 
     // find graphics queue
-    uint32_t graphics_queque_index = 0;
-    for (uint32_t i = 0; i < num_queque_families; i++) {
+    uint32_t graphics_queue_index = 0;
+    for (uint32_t i = 0; i < num_queue_families; i++) {
         VkQueueFamilyProperties queue_family = queue_families[i];
         if (queue_family.queueCount > 0 && queue_family.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-            graphics_queque_index = i;
+            graphics_queue_index = i;
             break;
         }
     }
@@ -258,6 +258,10 @@ BLV_Result blvDeviceLogicalDeviceInit(blvContext *context) {
         BLV_SET_ERROR(BLV_VULKAN_DEVICE_ERROR, "Failed to create logical device");
         return BLV_ERROR;
     }
+
+    // Save graphics Queue
+    context->graphics_queue.family_index = graphics_queue_index;
+    vkGetDeviceQueue(context->device.logical_device, graphics_queue_index, 0, &context->graphics_queue.queue);
 
     return BLV_OK;
 }
