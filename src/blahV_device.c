@@ -3,9 +3,57 @@
 #include "blahV/blahV_log.h"
 #include "blahV/blahV_context.h"
 #include "blahV/blahV_utils.h"
+#include "blahV/blahV_globals.h"
 
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan_core.h>
+
+VkBool32 VKAPI_CALL blvDebugReportCallback(
+    VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+    VkDebugUtilsMessageTypeFlagsEXT                  messageTypes,
+    const VkDebugUtilsMessengerCallbackDataEXT*      pCallbackData,
+    void*                                            pUserData) {
+    
+    if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) {
+        BLV_LOG(BLV_LOG_ERROR, "");
+    }
+    else {
+        BLV_LOG(BLV_LOG_WARNING, "");    
+    }
+
+    fprintf(stderr, "%s\n\n", pCallbackData->pMessage);
+
+    return VK_FALSE;
+}
+
+VkDebugUtilsMessengerEXT blvRegisterDebugCallback(VkInstance instance) {
+    PFN_vkCreateDebugUtilsMessengerEXT vkCreateDebugUtilsMessengerEXT;
+    vkCreateDebugUtilsMessengerEXT = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
+    if (!vkCreateDebugUtilsMessengerEXT) {
+        BLV_SET_ERROR(BLV_VULKAN_FUNCTION_LOAD_ERROR, "vkCreateDebugUtilsMessengerEXT is NULL");
+        return 0;
+    }
+
+    VkDebugUtilsMessengerEXT callback;
+
+    VkDebugUtilsMessengerCreateInfoEXT callback_info = {0};
+    callback_info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+    callback_info.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT |
+                                    VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT;
+
+    callback_info.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
+                                VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT |
+                                VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
+    callback_info.pfnUserCallback = blvDebugReportCallback;
+    
+    if (vkCreateDebugUtilsMessengerEXT(instance, &callback_info, NULL, &callback) != VK_SUCCESS) {
+        BLV_SET_ERROR(BLV_VULKAN_DEBUG_UTILS_ERROR, "Failed to create Debug Utils Messenger");
+        return 0;
+    }
+
+    return callback;
+}
+
 
 BLV_Result blvDeviceInit(blvContext *context) {
     
@@ -14,6 +62,15 @@ BLV_Result blvDeviceInit(blvContext *context) {
     }
 
     BLV_LOG(BLV_LOG_DEBUG, "Created Vulkan Instance\n");
+
+    // Debug Messenger enabled?
+    if (blv_error_validation_layers_enable) {
+        context->device.debug_callback = blvRegisterDebugCallback(context->device.instance);
+        if (!context->device.debug_callback) {
+            BLV_SET_ERROR(BLV_VULKAN_DEBUG_UTILS_ERROR, "Failed to create Debug Utils Messenger");
+            return BLV_ERROR;
+        }
+    }
 
     if (blvDevicePhysicalDeviceInit(context) != BLV_OK) {
         return BLV_ERROR;
@@ -64,23 +121,31 @@ BLV_Result blvDeviceInstanceInit(blvContext *context) {
     const char** glfw_extensions = NULL;
     glfw_extensions = glfwGetRequiredInstanceExtensions(&glfw_extension_count);
 
-    const char* additional_instance_extensions[] = {
-        VK_EXT_DEBUG_UTILS_EXTENSION_NAME,
-        VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME,
-    };
-
-    uint32_t instance_extension_count = glfw_extension_count + BLV_ARRAY_COUNT(additional_instance_extensions);
-    const char* instance_extensions[instance_extension_count];
+    const char* instance_extensions[BLV_MAX_INSTANCE_EXTENSIONS];
+    uint32_t instance_extensions_index = 0;
     
     // glfw extensions
-    for (uint32_t i = 0; i < glfw_extension_count; i++) {
-        instance_extensions[i] = glfw_extensions[i];
+    for (; instance_extensions_index < glfw_extension_count; instance_extensions_index++) {
+        instance_extensions[instance_extensions_index] = glfw_extensions[instance_extensions_index];
+    }
+    
+    // Add debug extensions
+    if (blv_error_validation_layers_enable) {
+        instance_extensions[instance_extensions_index++] = VK_EXT_DEBUG_UTILS_EXTENSION_NAME;
+        instance_extensions[instance_extensions_index++] = VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME;
     }
 
-    // other extensions
-    for (uint32_t i = 0; i < BLV_ARRAY_COUNT(additional_instance_extensions); i++) {
-        instance_extensions[glfw_extension_count + i] = additional_instance_extensions[i];
-    }
+    // Validation Features
+    VkValidationFeatureEnableEXT enable_validation_features[] = {
+        VK_VALIDATION_FEATURE_ENABLE_BEST_PRACTICES_EXT,
+        VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_EXT,
+        VK_VALIDATION_FEATURE_ENABLE_SYNCHRONIZATION_VALIDATION_EXT,
+    };
+
+    VkValidationFeaturesEXT validation_features = {0};
+    validation_features.sType = VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT;
+    validation_features.enabledValidationFeatureCount = BLV_ARRAY_COUNT(enable_validation_features);
+    validation_features.pEnabledValidationFeatures = enable_validation_features;
 
     VkApplicationInfo app_info = {0};
     app_info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -93,10 +158,20 @@ BLV_Result blvDeviceInstanceInit(blvContext *context) {
     VkInstanceCreateInfo instance_ceate_info = {0};
     instance_ceate_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     instance_ceate_info.pApplicationInfo = &app_info;
-    instance_ceate_info.enabledLayerCount = BLV_ARRAY_COUNT(wanted_layers);
-    instance_ceate_info.ppEnabledLayerNames = wanted_layers;
-    instance_ceate_info.enabledExtensionCount = BLV_ARRAY_COUNT(instance_extensions);
+    instance_ceate_info.enabledExtensionCount = instance_extensions_index;
     instance_ceate_info.ppEnabledExtensionNames = instance_extensions;
+
+    // Validation Layers enabled? 
+    if (blv_error_validation_layers_enable) {
+        instance_ceate_info.pNext = &validation_features;
+        instance_ceate_info.enabledLayerCount = BLV_ARRAY_COUNT(wanted_layers);
+        instance_ceate_info.ppEnabledLayerNames = wanted_layers;
+    } 
+    else {
+        instance_ceate_info.pNext = NULL;
+        instance_ceate_info.enabledLayerCount = 0;
+        instance_ceate_info.ppEnabledLayerNames = NULL;
+    }
 
     if (vkCreateInstance(&instance_ceate_info, NULL, &context->device.instance) != VK_SUCCESS) {
         BLV_SET_ERROR(BLV_VULKAN_INSTANCE_ERROR, "Couldnt create vulkan instance");

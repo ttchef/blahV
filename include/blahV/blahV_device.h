@@ -12,6 +12,7 @@ typedef struct {
     VkPhysicalDevice physical_device;
     VkPhysicalDeviceProperties physical_device_properties;
     VkDevice logical_device;
+    VkDebugUtilsMessengerEXT debug_callback;
 } blvDevice;
 
 BLV_Result blvDeviceInit(blvContext* context);

@@ -1,0 +1,7 @@
+
+#ifndef BLAHV_GLOBALS_H
+#define BLAHV_GLOBALS_H
+
+#define BLV_MAX_INSTANCE_EXTENSIONS 16
+
+#endif

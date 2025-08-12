@@ -6,6 +6,7 @@
 #include <stdio.h> 
 #include <string.h>
 #include <stdint.h>
+#include <threads.h>
 
 typedef enum {
     BLV_UNDEFINED = 1,
@@ -17,6 +18,8 @@ typedef enum {
     BLV_VULKAN_PHYSICAL_DEVICE_ERROR = -5,
     BLV_VULKAN_DEVICE_ERROR = -6,
     BLV_VULKAN_MISSING_INSTANCE_LAYER = -7,
+    BLV_VULKAN_DEBUG_UTILS_ERROR = -8,
+    BLV_VULKAN_FUNCTION_LOAD_ERROR = -9,
 } BLV_Result;
 
 typedef enum {
@@ -35,14 +38,16 @@ typedef struct {
 
 typedef void (*blv_pfn_error_callback)(const blvErrorInfo* error);
 
-extern blvErrorInfo blv_error_last;
+_Thread_local extern blvErrorInfo blv_error_last;
 extern bool blv_error_log_enable;
+extern bool blv_error_validation_layers_enable;
 extern blv_pfn_error_callback blv_error_callback;
 extern BLV_Log_Level blv_error_log_level;
 
 void blv_error_default_callback(const blvErrorInfo* error);
 void blv_error_set_callback(blv_pfn_error_callback callback);
 void blv_error_enable_log(bool enable);
+void blv_error_enable_validation_layers(bool enable);
 const blvErrorInfo* blv_error_get_last();
 void blv_error_clear_last();
 const char* blv_error_string(BLV_Result result);

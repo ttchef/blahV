@@ -1,10 +1,12 @@
 
 #include <stdio.h>
+#include <threads.h>
 
 #include "blahV/blahV_log.h"
 
-blvErrorInfo blv_error_last = {0};
+_Thread_local blvErrorInfo blv_error_last = {0};
 bool blv_error_log_enable = true;
+bool blv_error_validation_layers_enable = true;
 blv_pfn_error_callback blv_error_callback = blv_error_default_callback;
 BLV_Log_Level blv_error_log_level = BLV_LOG_WARNING;
 
@@ -29,6 +31,8 @@ const char* blv_error_string(BLV_Result result) {
         case BLV_VULKAN_PHYSICAL_DEVICE_ERROR:      return "Vulkan Physical Device Error";
         case BLV_VULKAN_DEVICE_ERROR:               return "Vulkan Device Error";
         case BLV_VULKAN_MISSING_INSTANCE_LAYER:     return "Vulkan Missing Instance Layer";
+        case BLV_VULKAN_DEBUG_UTILS_ERROR:          return "Vulkan Debug Utils Messenger Error";
+        case BLV_VULKAN_FUNCTION_LOAD_ERROR:        return "Vulkan Failed to load function Error";
         default:                                    return "Unkown Error";
     }
 }
@@ -44,6 +48,10 @@ const char* blv_error_log_level_string(BLV_Log_Level level) {
 
 void blv_error_enable_log(bool enable) {
     blv_error_log_enable = enable;
+}
+
+void blv_error_enable_validation_layers(bool enable) {
+    blv_error_validation_layers_enable = enable;
 }
 
 void blv_error_set_callback(blv_pfn_error_callback callback) {
