@@ -6,6 +6,7 @@
 blvErrorInfo blv_error_last = {0};
 bool blv_error_log_enable = true;
 blv_pfn_error_callback blv_error_callback = blv_error_default_callback;
+BLV_Log_Level blv_error_log_level = BLV_LOG_WARNING;
 
 void blv_error_default_callback(const blvErrorInfo* error) {
     printf("Error in %s:%d (%s): %s - %s\n",
@@ -23,8 +24,10 @@ const char* blv_error_string(BLV_Result result) {
         case BLV_OK:                                return "Success";
         case BLV_ERROR:                             return "General Error";
         case BLV_GLFW_ERROR:                        return "Glfw Error";
+        case BLV_INVALID_LOG_LEVEL:                 return "Invalid Log Level";
         case BLV_VULKAN_INSTANCE_ERROR:             return "Vulkan Instance Error";
         case BLV_VULKAN_PHYSICAL_DEVICE_ERROR:      return "Vulkan Physical Device Error";
+        case BLV_VULKAN_DEVICE_ERROR:               return "Vulkan Device Error";
         default:                                    return "Unkown Error";
     }
 }
@@ -55,5 +58,13 @@ void blv_error_clear_last() {
     blv_error_last.file_name = 0;
     blv_error_last.function_name = 0;
     blv_error_last.line_number = 0;
+}
+
+void blv_error_set_log_level(BLV_Log_Level level) {
+    if (level < 0) {
+        BLV_SET_ERROR(BLV_INVALID_LOG_LEVEL, "Log Level is Invalid");
+        return;
+    }
+    blv_error_log_level = level;
 }
 

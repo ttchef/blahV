@@ -11,7 +11,7 @@ typedef struct {
     VkInstance instance;
     VkPhysicalDevice physical_device;
     VkPhysicalDeviceProperties physical_device_properties;
-    VkDevice device;
+    VkDevice logical_device;
 } blvDevice;
 
 BLV_Result blvDeviceInit(blvContext* context);

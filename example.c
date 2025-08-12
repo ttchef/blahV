@@ -1,6 +1,5 @@
 
-#include "blahV/blahV_context.h"
-#include "blahV/blahV_window.h"
+#include "blahV/blahV_log.h"
 #include <stdio.h>
 
 #include <blahV/blahV.h>
@@ -8,6 +7,7 @@
 int main() {
     
     blvContext blv_context = {0};
+    blv_error_set_log_level(BLV_LOG_DEBUG);
 
     blvWindowCreateInfo window_create_info = {800, 600, "Hello World"};
     if (blvWindowInit(&blv_context, &window_create_info) != BLV_OK) {
@@ -21,7 +21,7 @@ int main() {
     }
 
     while (!blvWindowShouldQuit(&blv_context)) {
-        blvWindowPollEvents();
+        blvWindowPollEvents();;
     }
 
     blvDeinit(&blv_context);
