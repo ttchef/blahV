@@ -28,6 +28,7 @@ const char* blv_error_string(BLV_Result result) {
         case BLV_VULKAN_INSTANCE_ERROR:             return "Vulkan Instance Error";
         case BLV_VULKAN_PHYSICAL_DEVICE_ERROR:      return "Vulkan Physical Device Error";
         case BLV_VULKAN_DEVICE_ERROR:               return "Vulkan Device Error";
+        case BLV_VULKAN_MISSING_INSTANCE_LAYER:     return "Vulkan Missing Instance Layer";
         default:                                    return "Unkown Error";
     }
 }

@@ -4,6 +4,7 @@
 #include "blahV/blahV_context.h"
 #include "blahV/blahV_utils.h"
 
+#include <GLFW/glfw3.h>
 #include <vulkan/vulkan_core.h>
 
 BLV_Result blvDeviceInit(blvContext *context) {
@@ -31,19 +32,73 @@ BLV_Result blvDeviceInit(blvContext *context) {
 
 BLV_Result blvDeviceInstanceInit(blvContext *context) {
 
-    VkApplicationInfo appInfo = {0};
-    appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-    appInfo.pApplicationName = "blv application";
-    appInfo.applicationVersion = VK_MAKE_VERSION(0, 1, 0);
-    appInfo.pEngineName = "blv engine";
-    appInfo.engineVersion = VK_MAKE_VERSION(0, 1, 0);
-    appInfo.apiVersion = VK_API_VERSION_1_2; // TODO change later
+    // Get Layers
+    uint32_t layer_count = 0;
+    vkEnumerateInstanceLayerProperties(&layer_count, NULL);
+    VkLayerProperties layer_properties[layer_count];
+    vkEnumerateInstanceLayerProperties(&layer_count, layer_properties);
 
-    VkInstanceCreateInfo instanceCreateInfo = {0};
-    instanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-    instanceCreateInfo.pApplicationInfo = &appInfo;
+    // Layers we want
+    const char* wanted_layers[] = {
+        "VK_LAYER_KHRONOS_validation",
+    };
 
-    if (vkCreateInstance(&instanceCreateInfo, NULL, &context->device.instance) != VK_SUCCESS) {
+    // Do We have the layer
+    for (uint32_t i = 0; i < BLV_ARRAY_COUNT(wanted_layers); i++) {
+        bool found = false;
+        for (uint32_t j = 0; j < layer_count; j++) {
+            if (memcmp(wanted_layers[i], layer_properties[j].layerName, strlen(layer_properties[j].layerName)) == 0) {
+                found = true;
+                BLV_LOG(BLV_LOG_DEBUG, "Found Instance Layer: %s\n", wanted_layers[i]);
+                break;
+            }
+        }
+        if (!found) {
+            BLV_SET_ERROR(BLV_VULKAN_MISSING_INSTANCE_LAYER, "The Instance Layer: %s wasnt found", wanted_layers[i]);
+            return BLV_ERROR;
+        }
+    }
+
+    // Extensions
+    uint32_t glfw_extension_count = 0;
+    const char** glfw_extensions = NULL;
+    glfw_extensions = glfwGetRequiredInstanceExtensions(&glfw_extension_count);
+
+    const char* additional_instance_extensions[] = {
+        VK_EXT_DEBUG_UTILS_EXTENSION_NAME,
+        VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME,
+    };
+
+    uint32_t instance_extension_count = glfw_extension_count + BLV_ARRAY_COUNT(additional_instance_extensions);
+    const char* instance_extensions[instance_extension_count];
+    
+    // glfw extensions
+    for (uint32_t i = 0; i < glfw_extension_count; i++) {
+        instance_extensions[i] = glfw_extensions[i];
+    }
+
+    // other extensions
+    for (uint32_t i = 0; i < BLV_ARRAY_COUNT(additional_instance_extensions); i++) {
+        instance_extensions[glfw_extension_count + i] = additional_instance_extensions[i];
+    }
+
+    VkApplicationInfo app_info = {0};
+    app_info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+    app_info.pApplicationName = "blv application";
+    app_info.applicationVersion = VK_MAKE_VERSION(0, 1, 0);
+    app_info.pEngineName = "blv engine";
+    app_info.engineVersion = VK_MAKE_VERSION(0, 1, 0);
+    app_info.apiVersion = VK_API_VERSION_1_2; // TODO change later
+
+    VkInstanceCreateInfo instance_ceate_info = {0};
+    instance_ceate_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+    instance_ceate_info.pApplicationInfo = &app_info;
+    instance_ceate_info.enabledLayerCount = BLV_ARRAY_COUNT(wanted_layers);
+    instance_ceate_info.ppEnabledLayerNames = wanted_layers;
+    instance_ceate_info.enabledExtensionCount = BLV_ARRAY_COUNT(instance_extensions);
+    instance_ceate_info.ppEnabledExtensionNames = instance_extensions;
+
+    if (vkCreateInstance(&instance_ceate_info, NULL, &context->device.instance) != VK_SUCCESS) {
         BLV_SET_ERROR(BLV_VULKAN_INSTANCE_ERROR, "Couldnt create vulkan instance");
         return BLV_ERROR;
     }
@@ -107,7 +162,7 @@ BLV_Result blvDeviceLogicalDeviceInit(blvContext *context) {
     queue_create_info.queueCount = 1;
     queue_create_info.pQueuePriorities = priorities;
     
-    // Featues
+    // Features
     VkPhysicalDeviceFeatures enabled_features = {0};
 
     // Device Extensions
