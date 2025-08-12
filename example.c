@@ -8,7 +8,7 @@ int main() {
     
     blvContext blv_context = {0};
     blv_error_set_log_level(BLV_LOG_DEBUG);
-    blv_error_enable_validation_layers(true);
+    blv_error_enable_validation_layers(false);
 
     blvWindowCreateInfo window_create_info = {800, 600, "Hello World"};
     if (blvWindowInit(&blv_context, &window_create_info) != BLV_OK) {

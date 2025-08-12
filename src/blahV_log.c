@@ -27,6 +27,7 @@ const char* blv_error_string(BLV_Result result) {
         case BLV_ERROR:                             return "General Error";
         case BLV_GLFW_ERROR:                        return "Glfw Error";
         case BLV_INVALID_LOG_LEVEL:                 return "Invalid Log Level";
+        case BLV_ALLOC_FAIL:                        return "Allocation Fail";
         case BLV_VULKAN_INSTANCE_ERROR:             return "Vulkan Instance Error";
         case BLV_VULKAN_PHYSICAL_DEVICE_ERROR:      return "Vulkan Physical Device Error";
         case BLV_VULKAN_DEVICE_ERROR:               return "Vulkan Device Error";
@@ -34,6 +35,7 @@ const char* blv_error_string(BLV_Result result) {
         case BLV_VULKAN_DEBUG_UTILS_ERROR:          return "Vulkan Debug Utils Messenger Error";
         case BLV_VULKAN_FUNCTION_LOAD_ERROR:        return "Vulkan Failed to load function Error";
         case BLV_VULKAN_SURFACE_ERROR:              return "Vulkan Suface Error";
+        case BLV_VULKAN_SWAPCHAIN_ERROR:            return "Vulkan Swapchain Error";
         default:                                    return "Unkown Error";
     }
 }

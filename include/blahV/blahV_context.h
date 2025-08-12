@@ -7,12 +7,14 @@
 #include "blahV_window.h"
 #include "blahV_device.h"
 #include "blahV_surface.h"
+#include "blahV_swapchain.h"
 
 struct blvContext {
     blvWindow window;
     blvDevice device;
     blvQueue graphics_queue;
     blvSurface surface;
+    blvSwapchain swapchain;
 };
 
 BLV_Result blvVulkanInit(blvContext* context);
