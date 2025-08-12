@@ -6,11 +6,13 @@
 #include "blahV/blahV_queue.h"
 #include "blahV_window.h"
 #include "blahV_device.h"
+#include "blahV_surface.h"
 
 struct blvContext {
     blvWindow window;
     blvDevice device;
     blvQueue graphics_queue;
+    blvSurface surface;
 };
 
 BLV_Result blvVulkanInit(blvContext* context);

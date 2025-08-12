@@ -33,6 +33,7 @@ const char* blv_error_string(BLV_Result result) {
         case BLV_VULKAN_MISSING_INSTANCE_LAYER:     return "Vulkan Missing Instance Layer";
         case BLV_VULKAN_DEBUG_UTILS_ERROR:          return "Vulkan Debug Utils Messenger Error";
         case BLV_VULKAN_FUNCTION_LOAD_ERROR:        return "Vulkan Failed to load function Error";
+        case BLV_VULKAN_SURFACE_ERROR:              return "Vulkan Suface Error";
         default:                                    return "Unkown Error";
     }
 }

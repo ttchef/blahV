@@ -19,5 +19,6 @@ BLV_Result blvDeviceInit(blvContext* context);
 BLV_Result blvDeviceInstanceInit(blvContext* context);
 BLV_Result blvDevicePhysicalDeviceInit(blvContext* context);
 BLV_Result blvDeviceLogicalDeviceInit(blvContext* context);
+void blvDeviceDeinit(blvContext* context);
 
 #endif

@@ -20,6 +20,7 @@ typedef enum {
     BLV_VULKAN_MISSING_INSTANCE_LAYER = -7,
     BLV_VULKAN_DEBUG_UTILS_ERROR = -8,
     BLV_VULKAN_FUNCTION_LOAD_ERROR = -9,
+    BLV_VULKAN_SURFACE_ERROR = -10,
 } BLV_Result;
 
 typedef enum {

@@ -15,10 +15,10 @@ VkBool32 VKAPI_CALL blvDebugReportCallback(
     void*                                            pUserData) {
     
     if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) {
-        BLV_LOG(BLV_LOG_ERROR, "");
+        BLV_LOG(BLV_LOG_ERROR, " ");
     }
     else {
-        BLV_LOG(BLV_LOG_WARNING, "");    
+        BLV_LOG(BLV_LOG_WARNING, " ");    
     }
 
     fprintf(stderr, "%s\n\n", pCallbackData->pMessage);
@@ -265,4 +265,21 @@ BLV_Result blvDeviceLogicalDeviceInit(blvContext *context) {
 
     return BLV_OK;
 }
+
+void blvDeviceDeinit(blvContext* context) {
+     vkDestroyDevice(context->device.logical_device, NULL);
+
+    if (context->device.debug_callback) {
+        PFN_vkDestroyDebugUtilsMessengerEXT vkDestroyDebugUtilsMessengerEXT;
+        vkDestroyDebugUtilsMessengerEXT = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(context->device.instance, "vkDestroyDebugUtilsMessengerEXT");
+        if (!vkDestroyDebugUtilsMessengerEXT) {
+            BLV_SET_ERROR(BLV_VULKAN_FUNCTION_LOAD_ERROR, "Failed to load vkDestroyDebugUtilsMessengerEXT");
+        }
+
+        vkDestroyDebugUtilsMessengerEXT(context->device.instance, context->device.debug_callback, NULL);
+    }
+
+    vkDestroyInstance(context->device.instance, NULL);
+} 
+
 
