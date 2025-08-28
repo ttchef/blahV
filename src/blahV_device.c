@@ -54,7 +54,6 @@ VkDebugUtilsMessengerEXT blvRegisterDebugCallback(VkInstance instance) {
     return callback;
 }
 
-
 BLV_Result blvDeviceInit(blvContext *context) {
     
     if (blvDeviceInstanceInit(context) != BLV_OK) {
@@ -147,13 +146,18 @@ BLV_Result blvDeviceInstanceInit(blvContext *context) {
     validation_features.enabledValidationFeatureCount = BLV_ARRAY_COUNT(enable_validation_features);
     validation_features.pEnabledValidationFeatures = enable_validation_features;
 
+    // Get System Api version 
+    blvVulkanApiVersion api_version = blvGetVulkanApiVersion();
+    BLV_LOG(BLV_LOG_DEBUG, "Api Vresion: %d.%d.%d\n", api_version.major, api_version.minor, api_version.patch);
+
     VkApplicationInfo app_info = {0};
     app_info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     app_info.pApplicationName = "blv application";
     app_info.applicationVersion = VK_MAKE_VERSION(0, 1, 0);
     app_info.pEngineName = "blv engine";
     app_info.engineVersion = VK_MAKE_VERSION(0, 1, 0);
-    app_info.apiVersion = VK_API_VERSION_1_2; // TODO change later
+    app_info.apiVersion = VK_MAKE_API_VERSION(0, api_version.major,
+                                              api_version.minor, 0); // we dont care about the patch bro
 
     VkInstanceCreateInfo instance_ceate_info = {0};
     instance_ceate_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
@@ -241,17 +245,44 @@ BLV_Result blvDeviceLogicalDeviceInit(blvContext *context) {
     VkPhysicalDeviceFeatures enabled_features = {0};
 
     // Device Extensions
-    const char* device_extensions[] = {
-        "VK_KHR_swapchain",
-    };
+    const char* device_extensions[BLV_MAX_DEVICE_EXTENSIONS];
+    uint32_t device_extensions_index = 0;
+    device_extensions[device_extensions_index++] = "VK_KHR_swapchain";
     
+    // Check for dynamic rendering
+    bool supports_dynamic_rendering = blvDevicePhysicalDeviceIsExtensionSupported(context, VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME);
+    blvVulkanApiVersion api_version = blvGetVulkanApiVersion();
+    bool api_version_1_3_or_more = (api_version.major > 1) || (api_version.minor >= 3);
+    if (api_version_1_3_or_more || supports_dynamic_rendering) {
+        BLV_LOG(BLV_LOG_DEBUG, "Your driver does support dynamic rendering\n");
+    }
+    else if (api_version.minor == 2) {
+        if (supports_dynamic_rendering) {
+            device_extensions[device_extensions_index++] = VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME;
+        }
+        else {
+            BLV_SET_ERROR(BLV_VULKAN_MISSING_DEVICE_EXTENSIONS, "Extension: %s not found",VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME);
+            return BLV_ERROR;
+        }
+    } 
+    else {
+        BLV_SET_ERROR(BLV_VULKAN_MISSING_DEVICE_EXTENSIONS, "Extension: %s not found",VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME);
+        return BLV_ERROR;
+    }
+
+    // Enable dynamic rendering 
+    VkPhysicalDeviceDynamicRenderingFeaturesKHR dynamic_rendering_feature = {0};
+    dynamic_rendering_feature.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR;
+    dynamic_rendering_feature.pNext = NULL;
+    dynamic_rendering_feature.dynamicRendering = VK_TRUE;
 
     VkDeviceCreateInfo device_create_info = {0};
     device_create_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+    device_create_info.pNext = &dynamic_rendering_feature;
     device_create_info.pQueueCreateInfos = &queue_create_info;
     device_create_info.queueCreateInfoCount = 1;
     device_create_info.pEnabledFeatures = &enabled_features;
-    device_create_info.enabledExtensionCount = BLV_ARRAY_COUNT(device_extensions);
+    device_create_info.enabledExtensionCount = device_extensions_index;
     device_create_info.ppEnabledExtensionNames = device_extensions;
 
     if (vkCreateDevice(context->device.physical_device, &device_create_info, NULL, &context->device.logical_device) != VK_SUCCESS) {
@@ -281,5 +312,19 @@ void blvDeviceDeinit(blvContext* context) {
 
     vkDestroyInstance(context->device.instance, NULL);
 } 
+
+bool blvDevicePhysicalDeviceIsExtensionSupported(blvContext* context, const char *name) {
+    uint32_t num_extensions = 0;
+    vkEnumerateDeviceExtensionProperties(context->device.physical_device, NULL, &num_extensions, NULL);
+    VkExtensionProperties extensions[num_extensions];
+    vkEnumerateDeviceExtensionProperties(context->device.physical_device, NULL, &num_extensions, extensions);
+
+    for (uint32_t i = 0; i < num_extensions; i++) {
+        if (name == extensions[i].extensionName) return true;
+    }
+
+    return false;
+}
+
 
 

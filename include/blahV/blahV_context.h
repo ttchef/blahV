@@ -8,6 +8,7 @@
 #include "blahV_device.h"
 #include "blahV_surface.h"
 #include "blahV_swapchain.h"
+#include "blahV_pipeline.h"
 
 struct blvContext {
     blvWindow window;
@@ -15,6 +16,7 @@ struct blvContext {
     blvQueue graphics_queue;
     blvSurface surface;
     blvSwapchain swapchain;
+    blvPipeline graphcis_pipeline;
 };
 
 BLV_Result blvVulkanInit(blvContext* context);

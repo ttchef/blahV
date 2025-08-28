@@ -7,20 +7,20 @@
 _Thread_local blvErrorInfo blv_error_last = {0};
 bool blv_error_log_enable = true;
 bool blv_error_validation_layers_enable = true;
-blv_pfn_error_callback blv_error_callback = blv_error_default_callback;
+blvPfnErrorCallback blv_error_callback = blvErrorDefaultCallback;
 BLV_Log_Level blv_error_log_level = BLV_LOG_WARNING;
 
-void blv_error_default_callback(const blvErrorInfo* error) {
+void blvErrorDefaultCallback(const blvErrorInfo* error) {
     printf("Error in %s:%d (%s): %s - %s\n",
         error->file_name,
         error->line_number,
         error->function_name,
-        blv_error_string(error->error_code),
+        blvErrorString(error->error_code),
         error->message
     );
 }
 
-const char* blv_error_string(BLV_Result result) {
+const char* blvErrorString(BLV_Result result) {
     switch (result) {
         case BLV_UNDEFINED:                         return "Undefinied";
         case BLV_OK:                                return "Success";
@@ -28,6 +28,7 @@ const char* blv_error_string(BLV_Result result) {
         case BLV_GLFW_ERROR:                        return "Glfw Error";
         case BLV_INVALID_LOG_LEVEL:                 return "Invalid Log Level";
         case BLV_ALLOC_FAIL:                        return "Allocation Fail";
+        case BLV_FILE_ERROR:                        return "File Error";
         case BLV_VULKAN_INSTANCE_ERROR:             return "Vulkan Instance Error";
         case BLV_VULKAN_PHYSICAL_DEVICE_ERROR:      return "Vulkan Physical Device Error";
         case BLV_VULKAN_DEVICE_ERROR:               return "Vulkan Device Error";
@@ -36,11 +37,13 @@ const char* blv_error_string(BLV_Result result) {
         case BLV_VULKAN_FUNCTION_LOAD_ERROR:        return "Vulkan Failed to load function Error";
         case BLV_VULKAN_SURFACE_ERROR:              return "Vulkan Suface Error";
         case BLV_VULKAN_SWAPCHAIN_ERROR:            return "Vulkan Swapchain Error";
+        case BLV_VULKAN_MISSING_DEVICE_EXTENSIONS:  return "Vulkan Missing Device Extension";
+        case BLV_VULKAN_PIPELINE_ERROR:             return "Vulkan Pipeline Error";
         default:                                    return "Unkown Error";
     }
 }
 
-const char* blv_error_log_level_string(BLV_Log_Level level) {
+const char* blvErrorLogLevelString(BLV_Log_Level level) {
     switch (level) {
         case BLV_LOG_DEBUG:     return "BLV_DEBUG";
         case BLV_LOG_WARNING:   return "BLV_WARNING";
@@ -49,30 +52,30 @@ const char* blv_error_log_level_string(BLV_Log_Level level) {
     }
 }
 
-void blv_error_enable_log(bool enable) {
+void blvErrorEnableLog(bool enable) {
     blv_error_log_enable = enable;
 }
 
-void blv_error_enable_validation_layers(bool enable) {
+void blvErrorEnableValidationLayers(bool enable) {
     blv_error_validation_layers_enable = enable;
 }
 
-void blv_error_set_callback(blv_pfn_error_callback callback) {
+void blvErrorSetCallback(blvPfnErrorCallback callback) {
     blv_error_callback = callback;
 }
 
-const blvErrorInfo* blv_error_get_last() {
+const blvErrorInfo* blvErrorGetLast() {
     return &blv_error_last;
 }
 
-void blv_error_clear_last() {
+void blvErrorClearLast() {
     blv_error_last.error_code = BLV_UNDEFINED;
     blv_error_last.file_name = 0;
     blv_error_last.function_name = 0;
     blv_error_last.line_number = 0;
 }
 
-void blv_error_set_log_level(BLV_Log_Level level) {
+void blvErrorSetLogLevel(BLV_Log_Level level) {
     if (level < 0) {
         BLV_SET_ERROR(BLV_INVALID_LOG_LEVEL, "Log Level is Invalid");
         return;

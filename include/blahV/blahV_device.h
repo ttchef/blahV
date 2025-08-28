@@ -21,4 +21,7 @@ BLV_Result blvDevicePhysicalDeviceInit(blvContext* context);
 BLV_Result blvDeviceLogicalDeviceInit(blvContext* context);
 void blvDeviceDeinit(blvContext* context);
 
+bool blvDevicePhysicalDeviceIsExtensionSupported(blvContext* context, const char* name);
+void blvDevicePrintDeviceExtensions(blvContext* context, const char* name);
+
 #endif

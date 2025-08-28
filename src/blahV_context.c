@@ -2,23 +2,28 @@
 #include "blahV/blahV_context.h"
 #include "blahV/blahV_device.h"
 #include "blahV/blahV_log.h"
+#include "blahV/blahV_pipeline.h"
 #include "blahV/blahV_surface.h"
 #include "blahV/blahV_swapchain.h"
 #include "blahV/blahV_window.h"
 #include <vulkan/vulkan_core.h>
 
 BLV_Result blvVulkanInit(blvContext *context) {
-    blvDeviceInit(context);
+    if (blvDeviceInit(context) != BLV_OK) return BLV_ERROR;
     
     BLV_LOG(BLV_LOG_DEBUG, "Created Devices\n");
 
-    blvSurfaceInit(context);
+    if (blvSurfaceInit(context) != BLV_OK) return BLV_ERROR;
 
     BLV_LOG(BLV_LOG_DEBUG, "Created Surface\n");
 
-    blvSwapchainInit(context, NULL);
+    if (blvSwapchainInit(context, NULL) != BLV_OK) return BLV_ERROR;
 
     BLV_LOG(BLV_LOG_DEBUG, "Created Swapchain\n");
+
+    if (blvPipelineInit(context) != BLV_OK) return BLV_ERROR;
+
+    BLV_LOG(BLV_LOG_DEBUG, "Created Graphcis Pipeline\n");
 
     return BLV_OK;
 }
