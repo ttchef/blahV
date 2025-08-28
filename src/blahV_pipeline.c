@@ -47,12 +47,12 @@ BLV_Result blvPipelineInit(blvContext *context) {
 
     blvShaderCreateInfo vertex_shader_info = {0};
     vertex_shader_info.shader_type = BLV_SHADER_TYPE_VERTEX;
-    vertex_shader_info.filepath = "../shaders/spv/main_vert.spv";
+    vertex_shader_info.filepath = "shaders/spv/default_vert.spv";
     blvShaderInit(context, &vertex_shader_info);
 
     blvShaderCreateInfo fragment_shader_info = {0};
     fragment_shader_info.shader_type = BLV_SHADER_TYPE_FRAGMENT;
-    fragment_shader_info.filepath = "../shaders/spv/main_frag.gspv";
+    fragment_shader_info.filepath = "shaders/spv/default_frag.spv";
     blvShaderInit(context, &fragment_shader_info);
 
     VkPipelineShaderStageCreateInfo shader_stages[2];
@@ -126,8 +126,17 @@ BLV_Result blvPipelineInit(blvContext *context) {
         return BLV_ERROR;
     }
 
+    // Dynamic Rendering Info 
+    VkPipelineRenderingCreateInfoKHR pipeline_dynamic_rendering_info = {0};
+    pipeline_dynamic_rendering_info.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR;
+    pipeline_dynamic_rendering_info.colorAttachmentCount = 1;
+    pipeline_dynamic_rendering_info.pColorAttachmentFormats = &context->swapchain.format;
+    pipeline_dynamic_rendering_info.depthAttachmentFormat = VK_FORMAT_D32_SFLOAT;
+    pipeline_dynamic_rendering_info.stencilAttachmentFormat = VK_FORMAT_UNDEFINED;
+
     VkGraphicsPipelineCreateInfo pipeline_create_info = {0};
     pipeline_create_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipeline_create_info.pNext = &pipeline_dynamic_rendering_info; // dynamic rendering
     pipeline_create_info.subpass = 0;
     pipeline_create_info.stageCount = BLV_ARRAY_COUNT(shader_stages);
     pipeline_create_info.pStages = shader_stages;
