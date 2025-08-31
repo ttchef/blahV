@@ -5,12 +5,12 @@
 #include "blahV/blahV_utils.h"
 #include <vulkan/vulkan_core.h>
 
-BLV_Result blvShaderInit(blvContext *context, blvShaderCreateInfo *create_info) {
+VkShaderModule* blvShaderInit(blvContext *context, blvShaderCreateInfo *create_info) {
 
     FILE* file = fopen(create_info->filepath, "rb");
     if (!file) {
         BLV_SET_ERROR(BLV_FILE_ERROR, "Failed to open file: %s", create_info->filepath);
-        return BLV_ERROR;
+        return NULL;
     }
 
     fseek(file, 0, SEEK_END);
@@ -21,7 +21,7 @@ BLV_Result blvShaderInit(blvContext *context, blvShaderCreateInfo *create_info) 
     // if not we know something isnt right here
     if ((file_size & 0x03) != 0) {
         BLV_SET_ERROR(BLV_VULKAN_PIPELINE_ERROR, "Shader Command is not 4 Bytes long");
-        return BLV_ERROR;
+        return NULL;
     }
 
     uint8_t buffer[file_size];
@@ -35,12 +35,12 @@ BLV_Result blvShaderInit(blvContext *context, blvShaderCreateInfo *create_info) 
     VkShaderModule* module = (create_info->shader_type == BLV_SHADER_TYPE_VERTEX) ? &context->graphcis_pipeline.vertex_shader : &context->graphcis_pipeline.fragment_shader;
     if (vkCreateShaderModule(context->device.logical_device, &shader_create_info, NULL, module) != VK_SUCCESS) {
         BLV_SET_ERROR(BLV_VULKAN_PIPELINE_ERROR, "Failed to create shader module");
-        return BLV_ERROR;
+        return NULL;
     }
 
     fclose(file);
 
-    return BLV_OK;
+    return module;
 }
 
 BLV_Result blvPipelineInit(blvContext *context) {
@@ -48,12 +48,12 @@ BLV_Result blvPipelineInit(blvContext *context) {
     blvShaderCreateInfo vertex_shader_info = {0};
     vertex_shader_info.shader_type = BLV_SHADER_TYPE_VERTEX;
     vertex_shader_info.filepath = "shaders/spv/default_vert.spv";
-    blvShaderInit(context, &vertex_shader_info);
+    VkShaderModule* vertex_module = blvShaderInit(context, &vertex_shader_info);
 
     blvShaderCreateInfo fragment_shader_info = {0};
     fragment_shader_info.shader_type = BLV_SHADER_TYPE_FRAGMENT;
     fragment_shader_info.filepath = "shaders/spv/default_frag.spv";
-    blvShaderInit(context, &fragment_shader_info);
+    VkShaderModule* fragment_module = blvShaderInit(context, &fragment_shader_info);
 
     VkPipelineShaderStageCreateInfo shader_stages[2];
     shader_stages[0] = (VkPipelineShaderStageCreateInfo){0};
@@ -157,10 +157,15 @@ BLV_Result blvPipelineInit(blvContext *context) {
         return BLV_ERROR;
     }
 
+    // Delete modules
+    vkDestroyShaderModule(context->device.logical_device, *vertex_module, NULL);
+    vkDestroyShaderModule(context->device.logical_device, *fragment_module, NULL);
+
     return BLV_OK;
 }
 
 void blvPipelineDeinit(blvContext *context) {
-
+    vkDestroyPipelineLayout(context->device.logical_device, context->graphcis_pipeline.layout, NULL);
+    vkDestroyPipeline(context->device.logical_device, context->graphcis_pipeline.pipeline, NULL);
 }
 

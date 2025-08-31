@@ -30,7 +30,7 @@ typedef struct {
     BLV_Shader_Type shader_type;
 } blvShader;
 
-BLV_Result blvShaderInit(blvContext* context, blvShaderCreateInfo* create_info);
+VkShaderModule* blvShaderInit(blvContext* context, blvShaderCreateInfo* create_info);
 
 BLV_Result blvPipelineInit(blvContext* context);
 void blvPipelineDeinit(blvContext* context);

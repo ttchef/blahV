@@ -39,6 +39,8 @@ const char* blvErrorString(BLV_Result result) {
         case BLV_VULKAN_SWAPCHAIN_ERROR:            return "Vulkan Swapchain Error";
         case BLV_VULKAN_MISSING_DEVICE_EXTENSIONS:  return "Vulkan Missing Device Extension";
         case BLV_VULKAN_PIPELINE_ERROR:             return "Vulkan Pipeline Error";
+        case BLV_VULKAN_COMMAND_POOL_ERROR:         return "Vulkan Command Pool Error";
+        case BLV_VULKAN_COMMAND_BUFFER_ERROR:       return "Vulkan Command Buffer Error";
         default:                                    return "Unkown Error";
     }
 }

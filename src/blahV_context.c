@@ -1,5 +1,7 @@
 
 #include "blahV/blahV_context.h"
+#include "blahV/blahV_commandPool.h"
+#include "blahV/blahV_config.h"
 #include "blahV/blahV_device.h"
 #include "blahV/blahV_log.h"
 #include "blahV/blahV_pipeline.h"
@@ -9,6 +11,11 @@
 #include <vulkan/vulkan_core.h>
 
 BLV_Result blvVulkanInit(blvContext *context) {
+    
+    if (blvConfigInit(context) != BLV_OK) return BLV_ERROR;
+
+    BLV_LOG(BLV_LOG_DEBUG, "Created Default Config\n");
+
     if (blvDeviceInit(context) != BLV_OK) return BLV_ERROR;
     
     BLV_LOG(BLV_LOG_DEBUG, "Created Devices\n");
@@ -25,6 +32,10 @@ BLV_Result blvVulkanInit(blvContext *context) {
 
     BLV_LOG(BLV_LOG_DEBUG, "Created Graphcis Pipeline\n");
 
+    if (blvCommandPoolInit(context) != BLV_OK) return BLV_ERROR;
+
+    BLV_LOG(BLV_LOG_DEBUG, "Created Command Pool/Buffers\n");
+
     return BLV_OK;
 }
 
@@ -32,6 +43,7 @@ void blvDeinit(blvContext *context) {
     
     vkDeviceWaitIdle(context->device.logical_device);
     
+    blvPipelineDeinit(context);
     blvSwapchainDeinit(context);
     blvSurfaceDeinit(context);
     blvDeviceDeinit(context);
