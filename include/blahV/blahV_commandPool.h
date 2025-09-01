@@ -14,6 +14,7 @@ typedef struct {
 } blvCommandPool;
 
 BLV_Result blvCommandPoolInit(blvContext* context);
+BLV_Result blvCommandBufferRecord(blvContext* context);
 void blvCommandPoolDeinit(blvContext* context);
 
 #endif

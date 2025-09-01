@@ -20,6 +20,7 @@ typedef struct {
     uint32_t width;
     uint32_t height;
     VkFormat format;
+    VkExtent2D extent;
 } blvSwapchain;
 
 BLV_Result blvSwapchainInit(blvContext* context, blvSwapchainCreateInfo* create_info);

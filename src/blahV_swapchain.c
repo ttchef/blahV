@@ -48,6 +48,8 @@ BLV_Result blvSwapchainInit(blvContext *context, blvSwapchainCreateInfo* create_
         surface_capabilities.currentExtent.height = height;
     }
 
+    context->swapchain.extent = surface_capabilities.currentExtent;
+
     VkSwapchainCreateInfoKHR swapchain_create_info = {0};
     swapchain_create_info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
     swapchain_create_info.surface = context->surface.surface;
