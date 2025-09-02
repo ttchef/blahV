@@ -92,7 +92,7 @@ BLV_Result blvRendererDrawFrame(blvContext *context) {
     submit_info.pWaitSemaphores = wait_semaphores;
     submit_info.pWaitDstStageMask = wait_stages;
     submit_info.commandBufferCount = 1;
-    submit_info.pCommandBuffers = &context->command_pool.buffers[image_index];
+    submit_info.pCommandBuffers = &context->command_pool.buffers[context->renderer.frame_index];
     submit_info.signalSemaphoreCount = 1;
     submit_info.pSignalSemaphores = signal_semaphore;
     
