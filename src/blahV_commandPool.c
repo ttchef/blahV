@@ -99,7 +99,7 @@ BLV_Result blvCommandBufferRecord(blvContext *context, uint32_t image_index) {
     // Draw Calls
 
 
-    vkCmdEndRendering(context->command_pool.buffers[0]);
+    vkCmdEndRendering(context->command_pool.buffers[image_index]);
 
     if (vkEndCommandBuffer(context->command_pool.buffers[0]) != VK_SUCCESS) {
         BLV_SET_ERROR(BLV_VULKAN_COMMAND_BUFFER_ERROR, "Failed to end the recording of the command buffer");

@@ -7,9 +7,10 @@
 #include <vulkan/vulkan.h>
 
 typedef struct {
-    VkFence in_flight_fence;
-    VkSemaphore image_available;
-    VkSemaphore render_finished;
+    VkFence* in_flight_fence;
+    VkSemaphore* image_available;
+    VkSemaphore* render_finished;
+    uint32_t frame_index;
 } blvRenderer;
 
 BLV_Result blvRendererInit(blvContext* context);
