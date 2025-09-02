@@ -1,15 +1,12 @@
 
-#include "blahV/blahV_log.h"
-#include "blahV/blahV_renderer.h"
 #include <stdio.h>
-
 #include <blahV/blahV.h>
 
 int main() {
     
     blvContext blv_context = {0};
     blvErrorSetLogLevel(BLV_LOG_DEBUG);
-    blvErrorEnableValidationLayers(true);
+    blvErrorEnableValidationLayers(false);
 
     blvWindowCreateInfo window_create_info = {800, 600, "Hello World"};
     if (blvWindowInit(&blv_context, &window_create_info) != BLV_OK) {
