@@ -11,6 +11,7 @@
 #include "blahV_swapchain.h"
 #include "blahV_pipeline.h"
 #include "blahV_config.h"
+#include "blahV_renderer.h"
 
 struct blvContext {
     blvWindow window;
@@ -21,6 +22,7 @@ struct blvContext {
     blvSwapchain swapchain;
     blvPipeline graphcis_pipeline;
     blvCommandPool command_pool;
+    blvRenderer renderer;
 };
 
 BLV_Result blvVulkanInit(blvContext* context);

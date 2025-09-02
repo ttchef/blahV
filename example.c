@@ -1,5 +1,6 @@
 
 #include "blahV/blahV_log.h"
+#include "blahV/blahV_renderer.h"
 #include <stdio.h>
 
 #include <blahV/blahV.h>
@@ -23,6 +24,7 @@ int main() {
 
     while (!blvWindowShouldQuit(&blv_context)) {
         blvWindowPollEvents();;
+        blvRendererDrawFrame(&blv_context);
     }
 
     blvDeinit(&blv_context);

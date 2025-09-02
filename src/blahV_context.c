@@ -5,6 +5,7 @@
 #include "blahV/blahV_device.h"
 #include "blahV/blahV_log.h"
 #include "blahV/blahV_pipeline.h"
+#include "blahV/blahV_renderer.h"
 #include "blahV/blahV_surface.h"
 #include "blahV/blahV_swapchain.h"
 #include "blahV/blahV_window.h"
@@ -36,6 +37,10 @@ BLV_Result blvVulkanInit(blvContext *context) {
 
     BLV_LOG(BLV_LOG_DEBUG, "Created Command Pool/Buffers\n");
 
+    if (blvRendererInit(context) != BLV_OK) return BLV_ERROR;
+
+    BLV_LOG(BLV_LOG_DEBUG, "Renderer Init");
+
     return BLV_OK;
 }
 
@@ -43,6 +48,8 @@ void blvDeinit(blvContext *context) {
     
     vkDeviceWaitIdle(context->device.logical_device);
     
+    blvRendererDeinit(context);
+    blvCommandPoolDeinit(context);
     blvPipelineDeinit(context);
     blvSwapchainDeinit(context);
     blvSurfaceDeinit(context);

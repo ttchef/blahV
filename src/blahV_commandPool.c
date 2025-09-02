@@ -42,15 +42,19 @@ BLV_Result blvCommandPoolInit(blvContext *context) {
     
 }
 
-BLV_Result blvCommandBufferRecord(blvContext *context) {
+BLV_Result blvCommandBufferRecord(blvContext *context, uint32_t image_index) {
+
+    if (image_index >= context->command_pool.buffer_count) {
+        BLV_SET_ERROR(BLV_ERROR, "Image Index Invalid when recording command buffer");
+        return BLV_ERROR;
+    } 
 
     VkCommandBufferBeginInfo begin_info = {0};
     begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     begin_info.flags = 0;
     begin_info.pInheritanceInfo = NULL;
 
-    // TODO: change command buffers to use currentImageIndex instead later for frames in flight
-    if (vkBeginCommandBuffer(context->command_pool.buffers[0], &begin_info) != VK_SUCCESS) {
+    if (vkBeginCommandBuffer(context->command_pool.buffers[image_index], &begin_info) != VK_SUCCESS) {
         BLV_SET_ERROR(BLV_VULKAN_COMMAND_BUFFER_ERROR, "Failed to begin recording of command buffers");
         return BLV_ERROR;
     }
@@ -61,7 +65,7 @@ BLV_Result blvCommandBufferRecord(blvContext *context) {
 
     VkRenderingAttachmentInfoKHR color_attachment_info = {0};
     color_attachment_info.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR;
-    color_attachment_info.imageView = context->swapchain.image_views[0]; // TODO: also frames in flight
+    color_attachment_info.imageView = context->swapchain.image_views[image_index];
     color_attachment_info.imageLayout = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL_KHR;
     color_attachment_info.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     color_attachment_info.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -75,7 +79,7 @@ BLV_Result blvCommandBufferRecord(blvContext *context) {
     render_info.colorAttachmentCount = 1;
     render_info.pColorAttachments = &color_attachment_info;
 
-    vkCmdBeginRenderingKHR(context->command_pool.buffers[0], &render_info);
+    vkCmdBeginRendering(context->command_pool.buffers[image_index], &render_info);
 
     VkViewport viewport = {0};
     viewport.x = 0.0f;
@@ -89,13 +93,13 @@ BLV_Result blvCommandBufferRecord(blvContext *context) {
     scissor.extent = context->swapchain.extent;
     scissor.offset = (VkOffset2D){0, 0};
 
-    VkCmdSetViewport(context->command_pool.buffers[0], 0, 1, &viewport); // TODO: also frames_in_flight
-    vkCmdSetScissor(context->command_pool.buffers[0], 0, 1, &scissor); // TODO: also frames_in_flight
+    vkCmdSetViewport(context->command_pool.buffers[image_index], 0, 1, &viewport);
+    vkCmdSetScissor(context->command_pool.buffers[image_index], 0, 1, &scissor);
 
     // Draw Calls
 
 
-    vkCmdEndRenderingKHR(context->command_pool.buffers[0]);
+    vkCmdEndRendering(context->command_pool.buffers[0]);
 
     if (vkEndCommandBuffer(context->command_pool.buffers[0]) != VK_SUCCESS) {
         BLV_SET_ERROR(BLV_VULKAN_COMMAND_BUFFER_ERROR, "Failed to end the recording of the command buffer");

@@ -14,7 +14,7 @@ typedef struct {
 } blvCommandPool;
 
 BLV_Result blvCommandPoolInit(blvContext* context);
-BLV_Result blvCommandBufferRecord(blvContext* context);
+BLV_Result blvCommandBufferRecord(blvContext* context, uint32_t image_index);
 void blvCommandPoolDeinit(blvContext* context);
 
 #endif
