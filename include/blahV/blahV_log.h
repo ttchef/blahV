@@ -86,5 +86,19 @@ void blvErrorSetLogLevel(BLV_Log_Level level);
 
 
 
+#define BLV_CHECK(val) \
+    do { \
+        if ((val) != BLV_OK) { \
+            BLV_SET_ERROR((val), "General Error"); \
+        } \
+    } while(0)
+
+#define BLV_CHECK_RETURN(val) \
+    do { \
+        if ((val) != BLV_OK) { \
+            return (val); \
+        } \
+    } while(0)
+
 #endif // BLAHV_LOG_H
 

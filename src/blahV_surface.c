@@ -11,6 +11,8 @@ BLV_Result blvSurfaceInit(blvContext *context) {
         BLV_SET_ERROR(BLV_VULKAN_SURFACE_ERROR, "Failed to create Surface");
         return BLV_ERROR;
     }
+
+    return BLV_OK;
 }
 
 void blvSurfaceDeinit(blvContext *context) {

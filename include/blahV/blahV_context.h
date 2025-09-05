@@ -26,6 +26,7 @@ struct blvContext {
 };
 
 BLV_Result blvVulkanInit(blvContext* context);
+BLV_Result blvUpdate(blvContext* context);
 void blvDeinit(blvContext* context);
 
 #endif

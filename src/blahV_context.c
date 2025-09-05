@@ -12,10 +12,6 @@
 #include <vulkan/vulkan_core.h>
 
 BLV_Result blvVulkanInit(blvContext *context) {
-    
-    if (blvConfigInit(context) != BLV_OK) return BLV_ERROR;
-
-    BLV_LOG(BLV_LOG_DEBUG, "Created Default Config\n");
 
     if (blvDeviceInit(context) != BLV_OK) return BLV_ERROR;
     
@@ -40,6 +36,18 @@ BLV_Result blvVulkanInit(blvContext *context) {
     if (blvRendererInit(context) != BLV_OK) return BLV_ERROR;
 
     BLV_LOG(BLV_LOG_DEBUG, "Renderer Init");
+
+    return BLV_OK;
+}
+
+BLV_Result blvUpdate(blvContext *context) {
+    blvWindowPollEvents();
+
+    if (context->config.soft_resizing && blvWindowFinishedResize(context)) {
+        blvSwapchainRecreate(context);
+    }
+
+    BLV_CHECK_RETURN(blvRendererDrawFrame(context));
 
     return BLV_OK;
 }

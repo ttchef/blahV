@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <GLFW/glfw3.h>
 #include "blahV_log.h"
+#include "blahV_config.h"
 
 typedef struct blvContext blvContext;
 
@@ -16,9 +17,10 @@ typedef struct {
     uint32_t width;
     uint32_t height;
     const char* name;
-
     GLFWwindow* glfw_window;
     bool should_quit;
+    double last_resized_time;
+    bool resized;
 } blvWindow;
 
 typedef struct {
@@ -27,11 +29,12 @@ typedef struct {
     const char* name;
 } blvWindowCreateInfo;
 
-BLV_Result blvWindowInit(blvContext* context, blvWindowCreateInfo* createInfo);
-bool blvWindowShouldQuit(blvContext* context);
+BLV_Result blvWindowInit(blvContext* context, blvWindowCreateInfo* createInfo, blvConfig* config);
 BLV_Result blvWindowDeinit(blvContext* context);
 
-inline void blvWindowPollEvents(); 
-inline void blvWindowSetResizeCallback(blvWindow window, blvWindowResizeCallbackPFN function);
+bool blvWindowShouldQuit(blvContext* context);
+void blvWindowPollEvents(); 
+void blvWindowSetResizeCallback(blvWindow window, blvWindowResizeCallbackPFN function);
+bool blvWindowFinishedResize(blvContext* context);
 
 #endif

@@ -1,9 +1,12 @@
 
+#include "blahV/blahV_config.h"
 #include "blahV/blahV_context.h"
 #include "blahV/blahV_window.h"
 #include "blahV/blahV_device.h"
 #include "blahV/blahV_log.h"
 #include "blahV/blahV_swapchain.h"
+#include "blahV/blahV_utils.h"
+
 #include <GLFW/glfw3.h>
 
 // Default Window Resize Callback 
@@ -12,7 +15,28 @@ void blvWindowResizeCallbackDefault(GLFWwindow* window, int width, int height) {
     blvSwapchainRecreate(context);
 }
 
-BLV_Result blvWindowInit(blvContext* context, blvWindowCreateInfo* createInfo) {
+void blvWindowResizeCallbackSoftResizing(GLFWwindow* window, int width, int height) {
+    blvContext* context = (blvContext*)glfwGetWindowUserPointer(window);
+    context->window.last_resized_time = glfwGetTime();
+    context->window.resized = true;
+}
+
+
+BLV_Result blvWindowInit(blvContext* context, blvWindowCreateInfo* createInfo, blvConfig* config) {
+    if (!config) {
+        blvConfigInit(context);
+        BLV_LOG(BLV_LOG_DEBUG, "Created Default Config");
+    }
+    else {
+        if (BLV_IS_ZERO(config->frames_in_flight)) {
+            config->frames_in_flight = 3;
+        }
+        if (BLV_IS_ZERO(config->soft_resizing)) {
+            config->soft_resizing = true;
+        }
+        context->config = *config;
+    }
+
     if (!glfwInit()) {
         BLV_SET_ERROR(BLV_GLFW_ERROR, "Failed to init glfw!");
         return BLV_ERROR;
@@ -47,11 +71,16 @@ BLV_Result blvWindowInit(blvContext* context, blvWindowCreateInfo* createInfo) {
         return BLV_ERROR;
     }
 
+    context->window.last_resized_time = 0.0;
+    context->window.resized = false;
+
     // Set Context to User Data 
     glfwSetWindowUserPointer(context->window.glfw_window, context);
     
     // Resize Callback 
-    blvWindowSetResizeCallback(context->window, blvWindowResizeCallbackDefault);
+    if (context->config.soft_resizing) blvWindowSetResizeCallback(context->window, blvWindowResizeCallbackSoftResizing);
+    else blvWindowSetResizeCallback(context->window, blvWindowResizeCallbackDefault);
+
     
     return BLV_OK;
 
@@ -75,5 +104,13 @@ BLV_Result blvWindowDeinit(blvContext *context) {
 
 void blvWindowSetResizeCallback(blvWindow window, blvWindowResizeCallbackPFN function) {
     glfwSetWindowSizeCallback(window.glfw_window, function);
+}
+
+bool blvWindowFinishedResize(blvContext* context) {
+    if (context->window.resized &&  (glfwGetTime() - context->window.last_resized_time) > 0.2) {
+        context->window.resized = false;
+        return true;
+    }
+    return false;
 }
 

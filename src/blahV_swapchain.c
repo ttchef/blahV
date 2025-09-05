@@ -120,7 +120,10 @@ BLV_Result blvSwapchainRecreate(blvContext *context) {
     // Wait for all critical tasks to be done
     vkDeviceWaitIdle(context->device.logical_device);
     blvSwapchainDeinit(context);
-    blvSwapchainInit(context, NULL);
+    
+    BLV_CHECK_RETURN(blvSwapchainInit(context, NULL));
+
+    return BLV_OK;
 }
 
 void blvSwapchainDeinit(blvContext *context) {
