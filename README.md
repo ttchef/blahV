@@ -38,4 +38,5 @@ int main() {
 ```
 
 # Dependencies
+ - Vulkan (couldnt be guessed WOWOWOW)
  - glfw

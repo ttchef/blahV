@@ -81,6 +81,9 @@ BLV_Result blvCommandBufferRecord(blvContext *context, uint32_t image_index) {
 
     vkCmdBeginRendering(context->command_pool.buffers[image_index], &render_info);
 
+    // Bind Pipeline
+    vkCmdBindPipeline(context->command_pool.buffers[image_index], VK_PIPELINE_BIND_POINT_GRAPHICS, context->graphcis_pipeline.pipeline);
+
     VkViewport viewport = {0};
     viewport.x = 0.0f;
     viewport.y = 0.0f;
@@ -97,7 +100,7 @@ BLV_Result blvCommandBufferRecord(blvContext *context, uint32_t image_index) {
     vkCmdSetScissor(context->command_pool.buffers[image_index], 0, 1, &scissor);
 
     // Draw Calls
-
+    vkCmdDraw(context->command_pool.buffers[image_index], 3, 1, 0, 0);
 
     vkCmdEndRendering(context->command_pool.buffers[image_index]);
 
