@@ -24,6 +24,7 @@ typedef struct {
 } blvSwapchain;
 
 BLV_Result blvSwapchainInit(blvContext* context, blvSwapchainCreateInfo* create_info);
+BLV_Result blvSwapchainRecreate(blvContext* context);
 void blvSwapchainDeinit(blvContext* context);
 
 #endif

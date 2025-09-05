@@ -116,6 +116,13 @@ BLV_Result blvSwapchainInit(blvContext *context, blvSwapchainCreateInfo* create_
     return BLV_OK;
 }
 
+BLV_Result blvSwapchainRecreate(blvContext *context) {
+    // Wait for all critical tasks to be done
+    vkDeviceWaitIdle(context->device.logical_device);
+    blvSwapchainDeinit(context);
+    blvSwapchainInit(context, NULL);
+}
+
 void blvSwapchainDeinit(blvContext *context) {
     if (context->swapchain.images) {
         free(context->swapchain.images);

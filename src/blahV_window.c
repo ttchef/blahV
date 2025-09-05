@@ -1,8 +1,16 @@
 
 #include "blahV/blahV_context.h"
 #include "blahV/blahV_window.h"
+#include "blahV/blahV_device.h"
 #include "blahV/blahV_log.h"
+#include "blahV/blahV_swapchain.h"
 #include <GLFW/glfw3.h>
+
+// Default Window Resize Callback 
+void blvWindowResizeCallbackDefault(GLFWwindow* window, int width, int height) {
+    blvContext* context = (blvContext*)glfwGetWindowUserPointer(window);
+    blvSwapchainRecreate(context);
+}
 
 BLV_Result blvWindowInit(blvContext* context, blvWindowCreateInfo* createInfo) {
     if (!glfwInit()) {
@@ -38,6 +46,12 @@ BLV_Result blvWindowInit(blvContext* context, blvWindowCreateInfo* createInfo) {
         BLV_SET_ERROR(BLV_GLFW_ERROR, "Failed to create a glfw window!");
         return BLV_ERROR;
     }
+
+    // Set Context to User Data 
+    glfwSetWindowUserPointer(context->window.glfw_window, context);
+    
+    // Resize Callback 
+    blvWindowSetResizeCallback(context->window, blvWindowResizeCallbackDefault);
     
     return BLV_OK;
 
@@ -57,5 +71,9 @@ BLV_Result blvWindowDeinit(blvContext *context) {
     glfwTerminate();
 
     return BLV_OK;
+}
+
+void blvWindowSetResizeCallback(blvWindow window, blvWindowResizeCallbackPFN function) {
+    glfwSetWindowSizeCallback(window.glfw_window, function);
 }
 

@@ -9,6 +9,9 @@
 
 typedef struct blvContext blvContext;
 
+// Function Pointers
+typedef void (*blvWindowResizeCallbackPFN)(GLFWwindow*, int, int);
+
 typedef struct {
     uint32_t width;
     uint32_t height;
@@ -26,7 +29,9 @@ typedef struct {
 
 BLV_Result blvWindowInit(blvContext* context, blvWindowCreateInfo* createInfo);
 bool blvWindowShouldQuit(blvContext* context);
-void blvWindowPollEvents();
 BLV_Result blvWindowDeinit(blvContext* context);
+
+inline void blvWindowPollEvents(); 
+inline void blvWindowSetResizeCallback(blvWindow window, blvWindowResizeCallbackPFN function);
 
 #endif
