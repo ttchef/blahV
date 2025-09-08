@@ -3,6 +3,9 @@
 #define BLAHV_UTILS_H
 
 #include "blahV/blahV_log.h"
+#include "blahV_context.h"
+
+#include <stdint.h>
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan_core.h>
 
@@ -29,6 +32,22 @@ static inline blvVulkanApiVersion blvGetVulkanApiVersion() {
     result.patch = VK_API_VERSION_PATCH(instance_version);
 
     return result;
+}
+
+static inline uint32_t blvFindMemoryType(blvContext* context, uint32_t memory_type_bits, VkMemoryPropertyFlags properties) {
+    VkPhysicalDeviceMemoryProperties device_memory_properties;
+    vkGetPhysicalDeviceMemoryProperties(context->device.physical_device, &device_memory_properties);
+
+    for (int32_t i = 0; i < device_memory_properties.memoryTypeCount; i++) {
+        // is required memory type allowed?
+        if ((memory_type_bits & (1 << i)) != 0) {
+            // are the properties satisfied?
+            if ((device_memory_properties.memoryTypes[i].propertyFlags & properties) == properties) return i;
+        }
+    }
+
+    BLV_LOG(BLV_LOG_WARNING, "Couldnt find fitting Memory Type!\n");
+    return UINT32_MAX;
 }
 
 #endif

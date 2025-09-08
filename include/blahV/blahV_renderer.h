@@ -11,6 +11,7 @@ typedef struct {
     VkSemaphore* image_available;
     VkSemaphore* render_finished;
     uint32_t frame_index;
+    VkFence* images_in_flight;
 } blvRenderer;
 
 BLV_Result blvRendererInit(blvContext* context);

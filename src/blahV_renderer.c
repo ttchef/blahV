@@ -39,6 +39,7 @@ BLV_Result blvRendererInit(blvContext* context) {
         return BLV_ERROR;
     }
 
+    // Frames in flight
     for (int32_t i = 0; i < context->config.frames_in_flight; i++) {
         if (vkCreateSemaphore(context->device.logical_device, &sempahore_info, NULL, &context->renderer.image_available[i]) != VK_SUCCESS) {
             BLV_SET_ERROR(BLV_ERROR, "Failed to create image_available semaphore");
@@ -56,6 +57,17 @@ BLV_Result blvRendererInit(blvContext* context) {
         }
     }
 
+    // Images in flight
+    context->renderer.images_in_flight = malloc(sizeof(VkFence) * context->swapchain.image_count);
+    if (!context->renderer.images_in_flight) {
+        BLV_SET_ERROR(BLV_ALLOC_FAIL, "Failed to allocate renderer images in flight");
+        return BLV_ERROR;
+    }
+
+    for (int32_t i = 0; i < context->swapchain.image_count; i++) {
+        context->renderer.images_in_flight[i] = VK_NULL_HANDLE;
+    }
+
     return BLV_OK;
 }
 
@@ -69,9 +81,15 @@ BLV_Result blvRendererDrawFrame(blvContext *context) {
     vkAcquireNextImageKHR(context->device.logical_device, context->swapchain.swapchain, UINT64_MAX,
                           context->renderer.image_available[context->renderer.frame_index], VK_NULL_HANDLE, &image_index);
 
+    // Check Image Index
+    if (context->renderer.images_in_flight[image_index] != VK_NULL_HANDLE) {
+        vkWaitForFences(context->device.logical_device, 1, &context->renderer.images_in_flight[image_index], VK_TRUE, UINT64_MAX);
+    }
+    context->renderer.images_in_flight[image_index] = context->renderer.in_flight_fence[context->renderer.frame_index];
+
     // TODO: check image index before for saftey
     vkResetCommandBuffer(context->command_pool.buffers[context->renderer.frame_index], 0);
-    blvCommandBufferRecord(context, context->renderer.frame_index);
+    blvCommandBufferRecord(context, context->renderer.frame_index, image_index);
 
     VkSemaphore wait_semaphores[] = {
         context->renderer.image_available[context->renderer.frame_index],
@@ -113,6 +131,8 @@ BLV_Result blvRendererDrawFrame(blvContext *context) {
         BLV_SET_ERROR(BLV_ERROR, "Failed to present queus");
         return BLV_ERROR;
     }
+
+    context->renderer.images_in_flight[image_index] = VK_NULL_HANDLE;
 
     context->renderer.frame_index = (context->renderer.frame_index + 1) % context->config.frames_in_flight;
 

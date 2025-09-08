@@ -43,7 +43,8 @@ VkShaderModule* blvShaderInit(blvContext *context, blvShaderCreateInfo *create_i
     return module;
 }
 
-BLV_Result blvPipelineInit(blvContext *context) {
+BLV_Result blvPipelineInit(blvContext *context, VkVertexInputBindingDescription binding_description,
+                           VkVertexInputAttributeDescription attribute_description) {
 
     blvShaderCreateInfo vertex_shader_info = {0};
     vertex_shader_info.shader_type = BLV_SHADER_TYPE_VERTEX;
@@ -70,6 +71,10 @@ BLV_Result blvPipelineInit(blvContext *context) {
 
     VkPipelineVertexInputStateCreateInfo vertex_input_state = {0};
     vertex_input_state.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    vertex_input_state.vertexBindingDescriptionCount = 1;
+    vertex_input_state.pVertexBindingDescriptions = &binding_description;
+    vertex_input_state.vertexAttributeDescriptionCount = 1;
+    vertex_input_state.pVertexAttributeDescriptions = &attribute_description;
 
     VkPipelineInputAssemblyStateCreateInfo assembly_input_state = {0};
     assembly_input_state.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;

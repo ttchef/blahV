@@ -9,6 +9,7 @@
 #include "blahV/blahV_surface.h"
 #include "blahV/blahV_swapchain.h"
 #include "blahV/blahV_window.h"
+#include "blahV/blahV_rectangle.h"
 #include <vulkan/vulkan_core.h>
 
 BLV_Result blvVulkanInit(blvContext *context) {
@@ -25,7 +26,11 @@ BLV_Result blvVulkanInit(blvContext *context) {
 
     BLV_LOG(BLV_LOG_DEBUG, "Created Swapchain\n");
 
-    if (blvPipelineInit(context) != BLV_OK) return BLV_ERROR;
+    if (blvRectangleInit(context) != BLV_OK) return BLV_ERROR;
+
+    BLV_LOG(BLV_LOG_DEBUG, "Created Rectangle Buffers");
+
+    if (blvPipelineInit(context, blv_rectangle_binding_description, blv_rectangle_attribute_description) != BLV_OK) return BLV_ERROR;
 
     BLV_LOG(BLV_LOG_DEBUG, "Created Graphcis Pipeline\n");
 
