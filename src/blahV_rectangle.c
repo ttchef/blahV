@@ -45,7 +45,7 @@ BLV_Result blvRectangleInit(blvContext *context) {
     return BLV_OK;
 }
 
-void blvRectangleDraw(blvContext* context, uint32_t index, int32_t pos_x, int32_t pos_y, uint32_t width, uint32_t height) {
+void blvRectangleDraw(blvContext* context, int32_t pos_x, int32_t pos_y, uint32_t width, uint32_t height) {
 
     blvRectangle* rect = malloc(sizeof(blvRectangle));
     if (!rect) {
