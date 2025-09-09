@@ -5,7 +5,6 @@
 #include "blahV/blahV_device.h"
 #include "blahV/blahV_window.h"
 #include "blahV_log.h"
-#include "blahV_context.h"
 #include <vulkan/vulkan_core.h>
 
 typedef struct {

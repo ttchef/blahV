@@ -1,6 +1,6 @@
 
 CC = gcc
-CFLAGS = -Wall -g -Iinclude
+CFLAGS = -Wall -g -Iinclude -Ivendor
 LDFLAGS = -lglfw -lm -lvulkan -l$(LIBNAME)
 
 SRC = $(wildcard src/*.c) 

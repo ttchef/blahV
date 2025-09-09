@@ -31,6 +31,7 @@ typedef enum {
     BLV_VULKAN_QUEUE_SUBMIT_ERROR = -18,
     BLV_VULKAN_BUFFER_ERROR = -19,
     BLV_VULKAN_MEMORY_ERROR = -20,
+    BLV_VULKAN_DESCRIPTOR_SET_ERROR = -21,
 } BLV_Result;
 
 typedef enum {

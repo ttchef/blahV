@@ -44,6 +44,7 @@ const char* blvErrorString(BLV_Result result) {
         case BLV_VULKAN_QUEUE_SUBMIT_ERROR:         return "Vulkan Queue Submit Error";
         case BLV_VULKAN_BUFFER_ERROR:               return "Vulkan Buffer Error";
         case BLV_VULKAN_MEMORY_ERROR:               return "Vulkan Memory Error";
+        case BLV_VULKAN_DESCRIPTOR_SET_ERROR:       return "Vulkan Descriptor Set Error";
         default:                                    return "Unkown Error";
     }
 }

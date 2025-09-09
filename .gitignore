@@ -1,8 +1,8 @@
 
 bin/
 lib/
-vendor/
 res/
+vendor/
 *.obj
 compile_commands.json
 .cache/

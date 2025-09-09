@@ -4,6 +4,7 @@
 
 #include "blahV/blahV_device.h"
 #include "blahV/blahV_log.h"
+#include "blahV_buffer.h"
 #include <vulkan/vulkan_core.h>
 
 typedef enum {
@@ -16,6 +17,11 @@ typedef struct {
     VkPipelineLayout layout;
     VkShaderModule vertex_shader;
     VkShaderModule fragment_shader;
+
+    VkDescriptorPool descriptor_pool;
+    VkDescriptorSetLayout descriptor_layout;
+    VkDescriptorSet* descriptor_sets;
+    blvBuffer* uniform_buffers;
 } blvPipeline;
 
 typedef struct {

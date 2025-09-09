@@ -3,6 +3,11 @@
 #include "blahV/blahV_log.h"
 #include "blahV/blahV_context.h"
 #include "blahV/blahV_utils.h"
+#include "blahV/blahV_buffer.h"
+#include "blahV/blahV_math.h"
+
+#include <complex.h>
+#include <stdlib.h>
 #include <vulkan/vulkan_core.h>
 
 VkShaderModule* blvShaderInit(blvContext *context, blvShaderCreateInfo *create_info) {
@@ -123,13 +128,98 @@ BLV_Result blvPipelineInit(blvContext *context, VkVertexInputBindingDescription 
     dynamic_state.pDynamicStates = dynamic_states;
     dynamic_state.dynamicStateCount = BLV_ARRAY_COUNT(dynamic_states);
 
+    // ======= Descriptor sets  =======
+    context->graphcis_pipeline.descriptor_sets = malloc(sizeof(VkDescriptorSet) * context->config.frames_in_flight);
+    if (!context->graphcis_pipeline.descriptor_sets) {
+        BLV_SET_ERROR(BLV_ALLOC_FAIL, "Failed to allocate pipeline descriptor sets");
+        return BLV_ERROR;
+    }
+
+    VkDescriptorPoolSize descriptor_pool_size = {0};
+    descriptor_pool_size.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptor_pool_size.descriptorCount = context->config.frames_in_flight;
+
+    VkDescriptorPoolCreateInfo descriptor_pool_create_info = {0};
+    descriptor_pool_create_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+    descriptor_pool_create_info.poolSizeCount = 1;
+    descriptor_pool_create_info.pPoolSizes = &descriptor_pool_size;
+    descriptor_pool_create_info.maxSets = context->config.frames_in_flight;
+
+    if (vkCreateDescriptorPool(context->device.logical_device, &descriptor_pool_create_info, NULL, &context->graphcis_pipeline.descriptor_pool) != VK_SUCCESS) {
+        BLV_SET_ERROR(BLV_VULKAN_DESCRIPTOR_SET_ERROR, "Failed to create Descriptor pool");
+        return BLV_ERROR;
+    }
+
+    VkDescriptorSetLayoutBinding descriptor_set_layout_binding = {0};
+    descriptor_set_layout_binding.binding = 0;
+    descriptor_set_layout_binding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptor_set_layout_binding.descriptorCount = 1;
+    descriptor_set_layout_binding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+    VkDescriptorSetLayoutCreateInfo descriptor_Set_layout_create_info = {0};
+    descriptor_Set_layout_create_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    descriptor_Set_layout_create_info.bindingCount = 1;
+    descriptor_Set_layout_create_info.pBindings = &descriptor_set_layout_binding;
+
+    if (vkCreateDescriptorSetLayout(context->device.logical_device, &descriptor_Set_layout_create_info, NULL, &context->graphcis_pipeline.descriptor_layout) != VK_SUCCESS) {
+        BLV_SET_ERROR(BLV_VULKAN_DESCRIPTOR_SET_ERROR, "Failed to create Descriptor set layout");
+        return BLV_ERROR;
+    }
+
+    // Uniform Buffers
+
+    context->graphcis_pipeline.uniform_buffers = malloc(sizeof(blvBuffer) * context->config.frames_in_flight);
+    if (!context->graphcis_pipeline.uniform_buffers) {
+        BLV_SET_ERROR(BLV_ALLOC_FAIL, "Failed to allocate pipeline uniform buffers");
+        return BLV_ERROR;
+    }
+
+    for (int32_t i = 0; i < context->config.frames_in_flight; i++) {
+        blvBufferCreate(context, sizeof(blvMat4), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | 
+                        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &context->graphcis_pipeline.uniform_buffers[i]);
+    }
+
+    // Allocation of the sets 
+    for (int32_t i = 0; i < context->config.frames_in_flight; i++) {
+        VkDescriptorSetAllocateInfo descriptor_set_alloc_info = {0};
+        descriptor_set_alloc_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+        descriptor_set_alloc_info.descriptorPool = context->graphcis_pipeline.descriptor_pool;
+        descriptor_set_alloc_info.descriptorSetCount = 1;
+        descriptor_set_alloc_info.pSetLayouts = &context->graphcis_pipeline.descriptor_layout;
+
+        if (vkAllocateDescriptorSets(context->device.logical_device, &descriptor_set_alloc_info, &context->graphcis_pipeline.descriptor_sets[i]) != VK_SUCCESS) {
+            BLV_SET_ERROR(BLV_VULKAN_DESCRIPTOR_SET_ERROR, "Failed to vulkan allocate Descriptor sets");
+            return BLV_ERROR;
+        }
+
+        VkDescriptorBufferInfo descriptor_buffer_info = {0};
+        descriptor_buffer_info.buffer = context->graphcis_pipeline.uniform_buffers[i].buffer;
+        descriptor_buffer_info.offset = 0;
+        descriptor_buffer_info.range = sizeof(blvMat4);
+
+        VkWriteDescriptorSet descriptor_set_write = {0};
+        descriptor_set_write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descriptor_set_write.dstSet = context->graphcis_pipeline.descriptor_sets[i];
+        descriptor_set_write.dstBinding = 0;
+        descriptor_set_write.dstArrayElement = 0;
+        descriptor_set_write.descriptorCount = 1;
+        descriptor_set_write.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        descriptor_set_write.pBufferInfo = &descriptor_buffer_info;
+
+        vkUpdateDescriptorSets(context->device.logical_device, 1, &descriptor_set_write, 0, NULL);
+    }
+
     VkPipelineLayoutCreateInfo layout_info = {0};
     layout_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    layout_info.setLayoutCount = 1;
+    layout_info.pSetLayouts = &context->graphcis_pipeline.descriptor_layout;
     
     if (vkCreatePipelineLayout(context->device.logical_device, &layout_info, NULL, &context->graphcis_pipeline.layout) != VK_SUCCESS) {
         BLV_SET_ERROR(BLV_VULKAN_PIPELINE_ERROR, "Failed to create pipeline layout");
         return BLV_ERROR;
     }
+
+    // ====== End Descriptor Sets =======
 
     // Dynamic Rendering Info 
     VkPipelineRenderingCreateInfoKHR pipeline_dynamic_rendering_info = {0};
@@ -170,7 +260,20 @@ BLV_Result blvPipelineInit(blvContext *context, VkVertexInputBindingDescription 
 }
 
 void blvPipelineDeinit(blvContext *context) {
+
+    for (int32_t i = 0; i < context->config.frames_in_flight; i++) {
+        blvBufferDeinit(context, &context->graphcis_pipeline.uniform_buffers[i]);
+    }
+
+    vkDestroyDescriptorPool(context->device.logical_device, context->graphcis_pipeline.descriptor_pool, NULL);
+    vkDestroyDescriptorSetLayout(context->device.logical_device, context->graphcis_pipeline.descriptor_layout, NULL);
     vkDestroyPipelineLayout(context->device.logical_device, context->graphcis_pipeline.layout, NULL);
     vkDestroyPipeline(context->device.logical_device, context->graphcis_pipeline.pipeline, NULL);
+
+    free(context->graphcis_pipeline.descriptor_sets);
+    context->graphcis_pipeline.descriptor_sets = NULL;
+    
+    free(context->graphcis_pipeline.uniform_buffers);
+    context->graphcis_pipeline.uniform_buffers = NULL;
 }
 

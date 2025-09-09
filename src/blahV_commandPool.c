@@ -4,6 +4,7 @@
 #include "blahV/blahV_log.h"
 #include "blahV/blahV_context.h"
 #include "blahV/blahV_rectangle.h"
+#include "blahV/blahV_math.h"
 #include <vulkan/vulkan_core.h>
 #include <stdlib.h>
 
@@ -122,6 +123,17 @@ BLV_Result blvCommandBufferRecord(blvContext *context, uint32_t frame_index, uin
 
     vkCmdSetViewport(context->command_pool.buffers[frame_index], 0, 1, &viewport);
     vkCmdSetScissor(context->command_pool.buffers[frame_index], 0, 1, &scissor);
+    
+    // Update Uniform Buffer
+    blvMat4 model_matrix = blvMat4Translate(blvV3(0.5f, 0.0f, 0.0f));
+
+    void* mapped;
+    vkMapMemory(context->device.logical_device, context->graphcis_pipeline.uniform_buffers[frame_index].memory, 0, sizeof(blvMat4), 0, &mapped);
+    memcpy(mapped, &model_matrix, sizeof(model_matrix));
+    vkUnmapMemory(context->device.logical_device, context->graphcis_pipeline.uniform_buffers[frame_index].memory);
+
+    vkCmdBindDescriptorSets(context->command_pool.buffers[frame_index], VK_PIPELINE_BIND_POINT_GRAPHICS, context->graphcis_pipeline.layout, 0, 1,
+                            &context->graphcis_pipeline.descriptor_sets[frame_index], 0, NULL);
 
     // Draw Calls
     blvRendererRenderQueue(context, frame_index);
