@@ -5,5 +5,6 @@
 #include "blahV_log.h"
 #include "blahV_context.h"
 #include "blahV_window.h"
+#include "blahV_rectangle.h"
 
 #endif

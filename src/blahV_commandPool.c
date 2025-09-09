@@ -124,7 +124,7 @@ BLV_Result blvCommandBufferRecord(blvContext *context, uint32_t frame_index, uin
     vkCmdSetScissor(context->command_pool.buffers[frame_index], 0, 1, &scissor);
 
     // Draw Calls
-    blvRectangleDraw(context, frame_index);
+    blvRendererRenderQueue(context, frame_index);
 
     vkCmdEndRendering(context->command_pool.buffers[frame_index]);
 

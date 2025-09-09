@@ -4,6 +4,7 @@
 #include "blahV/blahV_device.h"
 #include "blahV/blahV_log.h"
 #include "blahV/blahV_context.h"
+#include "blahV/blahV_rectangle.h"
 
 #include <math.h>
 #include <stdint.h>
@@ -67,6 +68,37 @@ BLV_Result blvRendererInit(blvContext* context) {
     for (int32_t i = 0; i < context->swapchain.image_count; i++) {
         context->renderer.images_in_flight[i] = VK_NULL_HANDLE;
     }
+
+    // Draw Calls
+    context->renderer.draw_calls_capacity = 10;
+    context->renderer.draw_calls = malloc(sizeof(void*) * context->renderer.draw_calls_capacity); 
+    if (!context->renderer.draw_calls) {
+        BLV_SET_ERROR(BLV_ALLOC_FAIL, "Failed to allocate renderer draw calls array");
+        return BLV_ERROR;
+    }
+    context->renderer.draw_calls_index = 0;
+
+    // Zero Initialise
+    for (int32_t i = 0; i < context->renderer.draw_calls_capacity; i++) {
+        context->renderer.draw_calls[i] = NULL;
+    }
+
+    return BLV_OK;
+}
+
+BLV_Result blvRendererPushDrawCall(blvContext *context, void *data) {
+
+    if (context->renderer.draw_calls_index >= context->renderer.draw_calls_capacity) {
+        context->renderer.draw_calls_capacity *= 2;
+        context->renderer.draw_calls = realloc(context->renderer.draw_calls, sizeof(void*) * context->renderer.draw_calls_capacity);
+        if (!context->renderer.draw_calls) {
+            BLV_SET_ERROR(BLV_ALLOC_FAIL, "Failed to reallocate renderer draw calls array");
+            return BLV_ERROR;
+        }
+    }    
+
+    context->renderer.draw_calls[context->renderer.draw_calls_index] = data;
+    context->renderer.draw_calls_index++;
 
     return BLV_OK;
 }
@@ -139,7 +171,33 @@ BLV_Result blvRendererDrawFrame(blvContext *context) {
     return BLV_OK;
 }
 
+BLV_Result blvRendererRenderQueue(blvContext *context, uint32_t index) {
+
+    for (int32_t i = 0; i < context->renderer.draw_calls_index; i++) {
+        if (context->renderer.draw_calls[i] == NULL) continue;
+        switch (*((uint32_t*)(context->renderer.draw_calls[i]))) {
+            case BLV_DRAW_TYPE_RECTANGLE:
+                blvRectangleRender(context, index);
+                break;
+            default:
+                break;
+        }
+        free((context->renderer.draw_calls[i]));
+        context->renderer.draw_calls[i] = NULL;
+    }
+    context->renderer.draw_calls_index = 0;
+
+
+    return BLV_OK;
+}
+
 void blvRendererDeinit(blvContext *context) {
+
+    free(context->renderer.images_in_flight);
+    context->renderer.images_in_flight = NULL;
+
+    free(context->renderer.draw_calls);
+    context->renderer.draw_calls = NULL;
 
     for (int32_t i = 0; i < context->config.frames_in_flight; i++) {
         vkDestroySemaphore(context->device.logical_device, context->renderer.image_available[i], NULL);

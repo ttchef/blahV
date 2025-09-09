@@ -12,8 +12,9 @@
 #include <vulkan/vulkan_core.h>
 
 typedef struct {
-    uint32_t pos_x;
-    uint32_t pos_y;
+    uint32_t draw_type;
+    int32_t pos_x;
+    int32_t pos_y;
     uint32_t width;
     uint32_t height;
 } blvRectangle;
@@ -27,7 +28,8 @@ extern blvBuffer blv_rectangle_vertex_buffer;
 extern blvBuffer blv_rectangle_indices_buffer;
 
 BLV_Result blvRectangleInit(blvContext* context);
-void blvRectangleDraw(blvContext* context, uint32_t index);
+void blvRectangleDraw(blvContext* context, uint32_t index, int32_t pos_x, int32_t pos_y, uint32_t width, uint32_t height);
+void blvRectangleRender(blvContext* context, uint32_t index);
 void blvRectangleDeinit(blvContext* context);
 
 #endif
