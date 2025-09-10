@@ -167,7 +167,6 @@ BLV_Result blvPipelineInit(blvContext *context, VkVertexInputBindingDescription 
     }
 
     // Uniform Buffers
-
     context->graphcis_pipeline.uniform_buffers = malloc(sizeof(blvBuffer) * context->config.frames_in_flight);
     if (!context->graphcis_pipeline.uniform_buffers) {
         BLV_SET_ERROR(BLV_ALLOC_FAIL, "Failed to allocate pipeline uniform buffers");
@@ -209,10 +208,18 @@ BLV_Result blvPipelineInit(blvContext *context, VkVertexInputBindingDescription 
         vkUpdateDescriptorSets(context->device.logical_device, 1, &descriptor_set_write, 0, NULL);
     }
 
+    // Push Constans
+    VkPushConstantRange push_constant_range = {0};
+    push_constant_range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    push_constant_range.offset = 0;
+    push_constant_range.size = sizeof(blvMat4);
+
     VkPipelineLayoutCreateInfo layout_info = {0};
     layout_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     layout_info.setLayoutCount = 1;
     layout_info.pSetLayouts = &context->graphcis_pipeline.descriptor_layout;
+    layout_info.pushConstantRangeCount = 1;
+    layout_info.pPushConstantRanges = &push_constant_range;
     
     if (vkCreatePipelineLayout(context->device.logical_device, &layout_info, NULL, &context->graphcis_pipeline.layout) != VK_SUCCESS) {
         BLV_SET_ERROR(BLV_VULKAN_PIPELINE_ERROR, "Failed to create pipeline layout");

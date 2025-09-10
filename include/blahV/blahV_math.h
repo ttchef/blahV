@@ -6,6 +6,7 @@
 
 // Types
 typedef HMM_Vec3 blvVec3;
+typedef HMM_Vec4 blvVec4;
 typedef HMM_Mat4 blvMat4;
 
 // Type Getter functions ig

@@ -23,7 +23,10 @@ int main() {
     }
 
     while (!blvWindowShouldQuit(&blv_context)) {
-        blvRectangleDraw(&blv_context, 0.5f, 0.5f, 1.0f, 1.0f);
+        blvRectangleDraw(&blv_context, -0.5f, -0.5f, 0.25f, 0.25f);
+        blvRectangleDraw(&blv_context, 0.5f, -0.5f, 0.25f, 0.25f);
+        blvRectangleDraw(&blv_context, -0.5f, 0.5f, 0.25f, 0.25f);
+        blvRectangleDraw(&blv_context, 0.5f, 0.5f, 0.25f, 0.25f);
         blvUpdate(&blv_context);
     }
 

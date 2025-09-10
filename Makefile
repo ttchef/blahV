@@ -29,6 +29,9 @@ uninstall:
 	rm -rf /usr/local/lib/lib$(LIBNAME).a 
 	rm -rf /usr/local/include/$(LIBNAME)/
 
+compile_shaders:
+	./compile.sh
+
 example:
 	./compile.sh
 	$(CC) $(CFLAGS) example.c -o bin/$(EXENAME) $(LDFLAGS)

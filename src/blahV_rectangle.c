@@ -71,15 +71,20 @@ void blvRectangleRender(blvContext *context, uint32_t index, blvRectangle* rect)
     blvMat4 model_scale = blvMat4Scale(blvV3(rect->scale_x, rect->scale_y, 0.0f));
     model_matrix = blvMat4Mul(model_matrix, model_scale);
 
+    vkCmdPushConstants(context->command_pool.buffers[index], context->graphcis_pipeline.layout,
+                       VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(blvMat4), &model_matrix);
+
+    /*
     void* mapped;
     vkMapMemory(context->device.logical_device, context->graphcis_pipeline.uniform_buffers[index].memory, 0, sizeof(blvMat4), 0, &mapped);
     memcpy(mapped, &model_matrix, sizeof(model_matrix));
     vkUnmapMemory(context->device.logical_device, context->graphcis_pipeline.uniform_buffers[index].memory);
+    */
 
     vkCmdBindVertexBuffers(context->command_pool.buffers[index], 0, 1, vertex_buffers, offsets);
     vkCmdBindIndexBuffer(context->command_pool.buffers[index], blv_rectangle_indices_buffer.buffer, 0, VK_INDEX_TYPE_UINT32);
-    vkCmdBindDescriptorSets(context->command_pool.buffers[index], VK_PIPELINE_BIND_POINT_GRAPHICS, context->graphcis_pipeline.layout, 0, 1,
-                            &context->graphcis_pipeline.descriptor_sets[index], 0, NULL);
+    //vkCmdBindDescriptorSets(context->command_pool.buffers[index], VK_PIPELINE_BIND_POINT_GRAPHICS, context->graphcis_pipeline.layout, 0, 1,
+      //                      &context->graphcis_pipeline.descriptor_sets[index], 0, NULL);
 
     vkCmdDrawIndexed(context->command_pool.buffers[index], BLV_ARRAY_COUNT(blv_rectangle_indices), 1, 0, 0, 0);
 }
