@@ -123,16 +123,6 @@ BLV_Result blvCommandBufferRecord(blvContext *context, uint32_t frame_index, uin
 
     vkCmdSetViewport(context->command_pool.buffers[frame_index], 0, 1, &viewport);
     vkCmdSetScissor(context->command_pool.buffers[frame_index], 0, 1, &scissor);
-    
-    // Update Uniform Buffer
-    blvMat4 model_matrix = blvMat4Translate(blvV3(0.0f, 0.0f, 0.0f));
-
-    void* mapped;
-    vkMapMemory(context->device.logical_device, context->graphcis_pipeline.uniform_buffers[frame_index].memory, 0, sizeof(blvMat4), 0, &mapped);
-    memcpy(mapped, &model_matrix, sizeof(model_matrix));
-    vkUnmapMemory(context->device.logical_device, context->graphcis_pipeline.uniform_buffers[frame_index].memory);
-    VkBuffer vertex_buffers[] = {blv_rectangle_vertex_buffer.buffer};
-    VkDeviceSize offsets[] = {0};
 
     // Draw Calls
     blvRendererRenderQueue(context, frame_index);

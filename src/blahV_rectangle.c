@@ -6,6 +6,7 @@
 #include "blahV/blahV_log.h"
 #include "blahV/blahV_renderer.h"
 #include "blahV/blahV_utils.h"
+#include "blahV/blahV_math.h"
 
 #include <stdlib.h>
 #include <vulkan/vulkan_core.h>
@@ -45,7 +46,7 @@ BLV_Result blvRectangleInit(blvContext *context) {
     return BLV_OK;
 }
 
-void blvRectangleDraw(blvContext* context, int32_t pos_x, int32_t pos_y, uint32_t width, uint32_t height) {
+void blvRectangleDraw(blvContext* context, float pos_x, float pos_y, float scale_x, float scale_y) {
 
     blvRectangle* rect = malloc(sizeof(blvRectangle));
     if (!rect) {
@@ -54,16 +55,27 @@ void blvRectangleDraw(blvContext* context, int32_t pos_x, int32_t pos_y, uint32_
     rect->draw_type = BLV_DRAW_TYPE_RECTANGLE;
     rect->pos_x = pos_x;
     rect->pos_y = pos_y;
-    rect->width = width;
-    rect->height = height;
+    rect->scale_x = scale_x;
+    rect->scale_y = scale_y;
 
     blvRendererPushDrawCall(context, rect);
 
 }
 
-void blvRectangleRender(blvContext *context, uint32_t index) {
+void blvRectangleRender(blvContext *context, uint32_t index, blvRectangle* rect) {
     VkBuffer vertex_buffers[] = {blv_rectangle_vertex_buffer.buffer};
     VkDeviceSize offsets[] = {0};
+   
+    // Update Uniform Buffer
+    blvMat4 model_matrix = blvMat4Translate(blvV3(rect->pos_x, rect->pos_y, 0.0f));
+    blvMat4 model_scale = blvMat4Scale(blvV3(rect->scale_x, rect->scale_y, 0.0f));
+    model_matrix = blvMat4Mul(model_matrix, model_scale);
+
+    void* mapped;
+    vkMapMemory(context->device.logical_device, context->graphcis_pipeline.uniform_buffers[index].memory, 0, sizeof(blvMat4), 0, &mapped);
+    memcpy(mapped, &model_matrix, sizeof(model_matrix));
+    vkUnmapMemory(context->device.logical_device, context->graphcis_pipeline.uniform_buffers[index].memory);
+
     vkCmdBindVertexBuffers(context->command_pool.buffers[index], 0, 1, vertex_buffers, offsets);
     vkCmdBindIndexBuffer(context->command_pool.buffers[index], blv_rectangle_indices_buffer.buffer, 0, VK_INDEX_TYPE_UINT32);
     vkCmdBindDescriptorSets(context->command_pool.buffers[index], VK_PIPELINE_BIND_POINT_GRAPHICS, context->graphcis_pipeline.layout, 0, 1,

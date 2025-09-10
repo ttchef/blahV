@@ -177,7 +177,7 @@ BLV_Result blvRendererRenderQueue(blvContext *context, uint32_t index) {
         if (context->renderer.draw_calls[i] == NULL) continue;
         switch (*((uint32_t*)(context->renderer.draw_calls[i]))) {
             case BLV_DRAW_TYPE_RECTANGLE:
-                blvRectangleRender(context, index);
+                blvRectangleRender(context, index, (blvRectangle*)context->renderer.draw_calls[i]);
                 break;
             default:
                 break;

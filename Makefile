@@ -1,6 +1,6 @@
 
 CC = gcc
-CFLAGS = -Wall -g -Iinclude -Ivendor
+CFLAGS = -Wall -Wextra -Wconversion -g -Iinclude -Ivendor
 LDFLAGS = -lglfw -lm -lvulkan -l$(LIBNAME)
 
 SRC = $(wildcard src/*.c) 
@@ -12,11 +12,11 @@ EXENAME = main
 all: lib/lib$(LIBNAME)
 
 %.o: %.c 
-	mkdir -p bin
-	mkdir -p bin/obj
 	$(CC) -c $< -o $@ $(CFLAGS) 
 
 lib/lib$(LIBNAME): $(OBJ)
+	mkdir -p bin
+	mkdir -p bin/obj
 	mkdir -p lib
 	ar cr lib/lib$(LIBNAME).a $(OBJ)
 	rm -f $(OBJ)
