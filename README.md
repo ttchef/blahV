@@ -12,7 +12,7 @@ int main() {
     
     blvContext blv_context = {0};
     blvErrorSetLogLevel(BLV_LOG_DEBUG);
-    blvErrorEnableValidationLayers(true);
+    blvErrorEnableValidationLayers(false);
 
     blvConfig blv_config = {0};
     blv_config.soft_resizing = true;
@@ -29,7 +29,10 @@ int main() {
     }
 
     while (!blvWindowShouldQuit(&blv_context)) {
-        blvRectangleDraw(&blv_context, 0.5f, 0.5f, 1.0f, 1.0f);
+        blvRectangleDraw(&blv_context, -0.5f, -0.5f, 0.25f, 0.25f, blvV4(1.0f, 0.0f, 0.0f, 1.0f));
+        blvRectangleDraw(&blv_context, 0.5f, -0.5f, 0.25f, 0.25f, blvV4(0.0f, 1.0f, 0.0f, 1.0f));
+        blvRectangleDraw(&blv_context, -0.5f, 0.5f, 0.25f, 0.25f, blvV4(0.0f, 0.0f, 1.0f, 1.0f));
+        blvRectangleDraw(&blv_context, 0.5f, 0.5f, 0.25f, 0.25f, blvV4(1.0f, 1.0f, 1.0f, 1.0f));
         blvUpdate(&blv_context);
     }
 
@@ -37,7 +40,6 @@ int main() {
 
     return 0;
 }
-
 
 ```
 
