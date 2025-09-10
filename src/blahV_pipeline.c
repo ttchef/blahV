@@ -5,6 +5,7 @@
 #include "blahV/blahV_utils.h"
 #include "blahV/blahV_buffer.h"
 #include "blahV/blahV_math.h"
+#include "blahV/blahV_push_constants.h"
 
 #include <complex.h>
 #include <stdlib.h>
@@ -212,7 +213,7 @@ BLV_Result blvPipelineInit(blvContext *context, VkVertexInputBindingDescription 
     VkPushConstantRange push_constant_range = {0};
     push_constant_range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
     push_constant_range.offset = 0;
-    push_constant_range.size = sizeof(blvMat4);
+    push_constant_range.size = sizeof(blvModelColorPushConstant);
 
     VkPipelineLayoutCreateInfo layout_info = {0};
     layout_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;

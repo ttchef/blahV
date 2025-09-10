@@ -4,6 +4,7 @@
 #include "blahV/blahV_context.h"
 #include "blahV/blahV_device.h"
 #include "blahV/blahV_log.h"
+#include "blahV/blahV_push_constants.h"
 #include "blahV/blahV_renderer.h"
 #include "blahV/blahV_utils.h"
 #include "blahV/blahV_math.h"
@@ -46,7 +47,7 @@ BLV_Result blvRectangleInit(blvContext *context) {
     return BLV_OK;
 }
 
-void blvRectangleDraw(blvContext* context, float pos_x, float pos_y, float scale_x, float scale_y) {
+void blvRectangleDraw(blvContext* context, float pos_x, float pos_y, float scale_x, float scale_y, blvVec4 color) {
 
     blvRectangle* rect = malloc(sizeof(blvRectangle));
     if (!rect) {
@@ -57,6 +58,7 @@ void blvRectangleDraw(blvContext* context, float pos_x, float pos_y, float scale
     rect->pos_y = pos_y;
     rect->scale_x = scale_x;
     rect->scale_y = scale_y;
+    rect->color = color;
 
     blvRendererPushDrawCall(context, rect);
 
@@ -71,8 +73,13 @@ void blvRectangleRender(blvContext *context, uint32_t index, blvRectangle* rect)
     blvMat4 model_scale = blvMat4Scale(blvV3(rect->scale_x, rect->scale_y, 0.0f));
     model_matrix = blvMat4Mul(model_matrix, model_scale);
 
+    blvVec4 color = rect->color;
+    blvModelColorPushConstant push_constant;
+    push_constant.model = model_matrix;
+    push_constant.color = color;
+
     vkCmdPushConstants(context->command_pool.buffers[index], context->graphcis_pipeline.layout,
-                       VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(blvMat4), &model_matrix);
+                       VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(blvModelColorPushConstant), &push_constant);
 
     /*
     void* mapped;

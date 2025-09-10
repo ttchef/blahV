@@ -7,6 +7,7 @@
 #include "blahV/blahV_device.h"
 #include "blahV_log.h"
 #include "blahV_buffer.h"
+#include "blahV/blahV_math.h"
 
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan_core.h>
@@ -17,6 +18,7 @@ typedef struct {
     float pos_y;
     float scale_x;
     float scale_y;
+    blvVec4 color;
 } blvRectangle;
 
 extern float blv_rectangle_vertices[];
@@ -28,7 +30,7 @@ extern blvBuffer blv_rectangle_vertex_buffer;
 extern blvBuffer blv_rectangle_indices_buffer;
 
 BLV_Result blvRectangleInit(blvContext* context);
-void blvRectangleDraw(blvContext* context, float pos_x, float pos_y, float scale_x, float scale_y);
+void blvRectangleDraw(blvContext* context, float pos_x, float pos_y, float scale_x, float scale_y, blvVec4 color);
 void blvRectangleRender(blvContext* context, uint32_t index, blvRectangle* rect);
 void blvRectangleDeinit(blvContext* context);
 

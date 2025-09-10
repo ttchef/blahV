@@ -10,7 +10,8 @@ typedef HMM_Vec4 blvVec4;
 typedef HMM_Mat4 blvMat4;
 
 // Type Getter functions ig
-#define blvV3(x, y, z) (HMM_V3(x, y, z))
+#define blvV3(x, y, z)      (HMM_V3(x, y, z))
+#define blvV4(x, y, z, w)   (HMM_V4(x, y, z, w))
 
 // Matrix Math 
 #define blvMat4Mul(a, b) (HMM_MulM4(a, b))
