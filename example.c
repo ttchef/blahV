@@ -1,4 +1,5 @@
 
+#include "blahV/renderer/blahV_camera.h"
 #include <stdio.h>
 #include <blahV/blahV.h>
 
@@ -21,6 +22,17 @@ int main() {
         fprintf(stderr, "Failed to init blv vulkan!\n");
         return -1;
     }
+
+    blvCameraCreateInfo camera_create_info = { 
+        .speed = 1.0f,
+        .sensitivity = 100.0f,
+        .position = blvV3(0.0f, 0.0f, 0.0f),
+        .direction = blvV3(0.0f, 0.0f, -1.0f),
+        .projection_type = BLV_CAMERA_PROJECTION_TYPE_PERSPECTIVE,
+        .type = BLV_CAMERA_FREE_MOVE,
+    };
+
+    blvCamera camera = blvCameraInit(&camera_create_info);
 
     while (!blvWindowShouldQuit(&blv_context)) {
         blvRectangleDraw(&blv_context, -0.5f, -0.5f, 0.25f, 0.25f, blvV4(1.0f, 0.0f, 0.0f, 1.0f));

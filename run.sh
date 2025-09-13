@@ -1,6 +1,4 @@
-sudo make clean
+make clean
 make compile_shaders
-./compile.sh
-make
-sudo make install
+sudo make install BUILD=shared
 make run
