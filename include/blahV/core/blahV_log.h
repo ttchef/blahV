@@ -2,6 +2,8 @@
 #ifndef BLAHV_LOG_H
 #define BLAHV_LOG_H
 
+#include "blahV/core/blahV_globals.h"
+
 #include <stdbool.h>
 #include <stdio.h> 
 #include <string.h>
@@ -57,14 +59,14 @@ extern blvPfnErrorCallback blv_error_callback;
 extern BLV_Log_Level blv_error_log_level;
 
 void blvErrorDefaultCallback(const blvErrorInfo* error);
-void blvErrorSetCallback(blvPfnErrorCallback callback);
-void blvErrorEnableLog(bool enable);
-void blvErrorEnableValidationLayers(bool enable);
+BLVAPI void blvErrorSetCallback(blvPfnErrorCallback callback);
+BLVAPI void blvErrorEnableLog(bool enable);
+BLVAPI void blvErrorEnableValidationLayers(bool enable);
 const blvErrorInfo* blvErrorGetLast();
 void blvErrorClearLast();
 const char* blvErrorString(BLV_Result result);
 const char* blvErrorLogLevelString(BLV_Log_Level level);
-void blvErrorSetLogLevel(BLV_Log_Level level);
+BLVAPI void blvErrorSetLogLevel(BLV_Log_Level level);
 
 #define BLV_SET_ERROR(code, msg, ...) \
     do { \

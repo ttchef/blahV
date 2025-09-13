@@ -30,10 +30,10 @@ typedef struct {
     const char* name;
 } blvWindowCreateInfo;
 
-BLV_Result blvWindowInit(blvContext* context, blvWindowCreateInfo* createInfo, blvConfig* config);
+BLVAPI BLV_Result blvWindowInit(blvContext* context, blvWindowCreateInfo* createInfo, blvConfig* config);
 BLV_Result blvWindowDeinit(blvContext* context);
 
-bool blvWindowShouldQuit(blvContext* context);
+BLVAPI bool blvWindowShouldQuit(blvContext* context);
 void blvWindowPollEvents(); 
 void blvWindowSetResizeCallback(blvWindow window, blvWindowResizeCallbackPFN function);
 bool blvWindowFinishedResize(blvContext* context);

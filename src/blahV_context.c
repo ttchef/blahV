@@ -45,7 +45,7 @@ BLV_Result blvVulkanInit(blvContext *context) {
     return BLV_OK;
 }
 
-BLV_Result blvUpdate(blvContext *context) {
+BLVAPI BLV_Result blvUpdate(blvContext *context) {
     blvWindowPollEvents();
 
     if (context->config.soft_resizing && blvWindowFinishedResize(context)) {
@@ -57,7 +57,7 @@ BLV_Result blvUpdate(blvContext *context) {
     return BLV_OK;
 }
 
-void blvDeinit(blvContext *context) {
+BLVAPI void blvDeinit(blvContext *context) {
     
     vkDeviceWaitIdle(context->device.logical_device);
     

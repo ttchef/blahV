@@ -1,6 +1,6 @@
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Wconversion -g -Iinclude -Ivendor 
+CFLAGS = -Wall -Wextra -Wconversion -g -Iinclude -Ivendor -fvisibility=hidden
 LDFLAGS = -lglfw -lm -lvulkan 
 
 SRC = $(wildcard src/*.c) 
@@ -25,7 +25,7 @@ all: $(BUILD)
 
 shared: $(OBJ)
 	mkdir -p lib 
-	$(CC) -shared -fvisibility=hidden -o lib/lib$(LIBNAME).so $(OBJ) $(LDFLAGS)
+	$(CC) -shared -o lib/lib$(LIBNAME).so $(OBJ) $(LDFLAGS)
 	rm -f $(OBJ)
 
 static: $(OBJ)

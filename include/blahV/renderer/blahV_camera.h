@@ -40,7 +40,7 @@ typedef struct {
     blvMat4 view_proj_matrix;
 } blvCamera;
 
-blvCamera blvCameraInit(blvCameraCreateInfo* create_info);
+BLVAPI blvCamera blvCameraInit(blvCameraCreateInfo* create_info);
 void blvCameraDeinit();
 
 #endif
