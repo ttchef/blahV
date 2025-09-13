@@ -4,10 +4,9 @@
 
 #include <stdint.h>
 
-#include "blahV/blahV_device.h"
-#include "blahV_log.h"
-#include "blahV_buffer.h"
-#include "blahV/blahV_math.h"
+#include "blahV/core/blahV_log.h"
+#include "blahV/vulkan/blahV_buffer.h"
+#include "blahV/math/blahV_math.h"
 
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan_core.h>

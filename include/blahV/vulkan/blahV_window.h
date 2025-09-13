@@ -5,8 +5,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <GLFW/glfw3.h>
-#include "blahV_log.h"
-#include "blahV_config.h"
+
+#include "blahV/core/blahV_log.h"
+#include "blahV/core/blahV_config.h"
 
 typedef struct blvContext blvContext;
 

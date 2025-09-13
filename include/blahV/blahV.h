@@ -2,9 +2,9 @@
 #ifndef BLAHV_H
 #define BLAHV_H
 
-#include "blahV_log.h"
-#include "blahV_context.h"
-#include "blahV_window.h"
-#include "blahV_rectangle.h"
+#include "core/blahV_log.h"
+#include "core/blahV_context.h"
+#include "vulkan/blahV_window.h"
+#include "renderer/blahV_rectangle.h"
 
 #endif

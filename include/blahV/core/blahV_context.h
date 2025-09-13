@@ -2,16 +2,16 @@
 #ifndef BLAHV_CONTEXT_H
 #define BLAHV_CONTEXT_H
 
-#include "blahV/blahV_commandPool.h"
-#include "blahV/blahV_log.h"
-#include "blahV/blahV_queue.h"
-#include "blahV_window.h"
-#include "blahV_device.h"
-#include "blahV_surface.h"
-#include "blahV_swapchain.h"
-#include "blahV_pipeline.h"
+#include "blahV/vulkan/blahV_commandPool.h"
+#include "blahV/vulkan/blahV_queue.h"
+#include "blahV/vulkan/blahV_window.h"
+#include "blahV/vulkan/blahV_device.h"
+#include "blahV/vulkan/blahV_surface.h"
+#include "blahV/vulkan/blahV_pipeline.h"
+#include "blahV/vulkan/blahV_swapchain.h"
+#include "blahV/renderer/blahV_renderer.h"
+#include "blahV_log.h"
 #include "blahV_config.h"
-#include "blahV_renderer.h"
 
 struct blvContext {
     blvWindow window;
