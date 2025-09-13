@@ -1,15 +1,15 @@
 
-#include "blahV/blahV_context.h"
-#include "blahV/blahV_commandPool.h"
-#include "blahV/blahV_config.h"
-#include "blahV/blahV_device.h"
-#include "blahV/blahV_log.h"
-#include "blahV/blahV_pipeline.h"
-#include "blahV/blahV_renderer.h"
-#include "blahV/blahV_surface.h"
-#include "blahV/blahV_swapchain.h"
-#include "blahV/blahV_window.h"
-#include "blahV/blahV_rectangle.h"
+#include "blahV/core/blahV_context.h"
+#include "blahV/vulkan/blahV_commandPool.h"
+#include "blahV/core/blahV_config.h"
+#include "blahV/vulkan/blahV_device.h"
+#include "blahV/core/blahV_log.h"
+#include "blahV/vulkan/blahV_pipeline.h"
+#include "blahV/renderer/blahV_renderer.h"
+#include "blahV/vulkan/blahV_surface.h"
+#include "blahV/vulkan/blahV_swapchain.h"
+#include "blahV/vulkan/blahV_window.h"
+#include "blahV/renderer/blahV_rectangle.h"
 #include <vulkan/vulkan_core.h>
 
 BLV_Result blvVulkanInit(blvContext *context) {

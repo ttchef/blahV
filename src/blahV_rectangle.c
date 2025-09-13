@@ -1,13 +1,13 @@
 
-#include "blahV/blahV_rectangle.h"
-#include "blahV/blahV_buffer.h"
-#include "blahV/blahV_context.h"
-#include "blahV/blahV_device.h"
-#include "blahV/blahV_log.h"
-#include "blahV/blahV_push_constants.h"
-#include "blahV/blahV_renderer.h"
-#include "blahV/blahV_utils.h"
-#include "blahV/blahV_math.h"
+#include "blahV/renderer/blahV_rectangle.h"
+#include "blahV/vulkan/blahV_buffer.h"
+#include "blahV/core/blahV_context.h"
+#include "blahV/vulkan/blahV_device.h"
+#include "blahV/core/blahV_log.h"
+#include "blahV/vulkan/blahV_push_constants.h"
+#include "blahV/renderer/blahV_renderer.h"
+#include "blahV/core/blahV_utils.h"
+#include "blahV/math/blahV_math.h"
 
 #include <stdlib.h>
 #include <vulkan/vulkan_core.h>

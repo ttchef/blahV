@@ -1,10 +1,10 @@
 
-#include "blahV/blahV_commandPool.h"
-#include "blahV/blahV_device.h"
-#include "blahV/blahV_log.h"
-#include "blahV/blahV_context.h"
-#include "blahV/blahV_rectangle.h"
-#include "blahV/blahV_math.h"
+#include "blahV/vulkan/blahV_commandPool.h"
+#include "blahV/vulkan/blahV_device.h"
+#include "blahV/core/blahV_log.h"
+#include "blahV/core/blahV_context.h"
+#include "blahV/renderer/blahV_rectangle.h"
+#include "blahV/math/blahV_math.h"
 #include <vulkan/vulkan_core.h>
 #include <stdlib.h>
 

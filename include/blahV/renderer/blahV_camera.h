@@ -4,7 +4,7 @@
 
 #include "blahV/math/blahV_math.h"
 #include "blahV/core/blahV_log.h"
-#include "blahV/blahV_context.h"
+#include "blahV/core/blahV_context.h"
 
 typedef enum {
     BLV_CAMERA_PROJECTION_TYPE_PERSPECTIVE,

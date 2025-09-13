@@ -2,8 +2,8 @@
 #ifndef BLAHV_RENDERER_H
 #define BLAHV_RENDERER_H
 
-#include "blahV/blahV_device.h"
-#include "blahV/blahV_log.h"
+#include "blahV/vulkan/blahV_device.h"
+#include "blahV/core/blahV_log.h"
 #include <vulkan/vulkan.h>
 
 typedef enum {

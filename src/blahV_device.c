@@ -1,9 +1,9 @@
 
-#include "blahV/blahV_device.h"
-#include "blahV/blahV_log.h"
-#include "blahV/blahV_context.h"
-#include "blahV/blahV_utils.h"
-#include "blahV/blahV_globals.h"
+#include "blahV/vulkan/blahV_device.h"
+#include "blahV/core/blahV_log.h"
+#include "blahV/core/blahV_context.h"
+#include "blahV/core/blahV_utils.h"
+#include "blahV/core/blahV_globals.h"
 
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan_core.h>

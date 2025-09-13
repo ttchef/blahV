@@ -1,7 +1,7 @@
 
-#include "blahV/blahV_swapchain.h"
-#include "blahV/blahV_log.h"
-#include "blahV/blahV_context.h"
+#include "blahV/vulkan/blahV_swapchain.h"
+#include "blahV/core/blahV_log.h"
+#include "blahV/core/blahV_context.h"
 
 #include <stdlib.h>
 #include <vulkan/vulkan_core.h>

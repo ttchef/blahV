@@ -1,7 +1,7 @@
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Wconversion -g -Iinclude -Ivendor
-LDFLAGS = -lglfw -lm -lvulkan -l$(LIBNAME)
+CFLAGS = -Wall -Wextra -Wconversion -g -Iinclude -Ivendor 
+LDFLAGS = -lglfw -lm -lvulkan 
 
 SRC = $(wildcard src/*.c) 
 OBJ = $(SRC:.c=.o)
@@ -12,7 +12,10 @@ EXENAME = main
 BUILD ?= static
 
 ifeq ($(BUILD),shared)
-	CFLAGS += -fPIC 
+	CFLAGS += -fPIC
+	CFLAGS += -DBLAHV_BUILD_SHARED
+else 
+	CFLAGS += -DBLAHV_BUILD_STATIC
 endif
 
 all: $(BUILD)
@@ -22,7 +25,7 @@ all: $(BUILD)
 
 shared: $(OBJ)
 	mkdir -p lib 
-	$(CC) -shared -o lib/lib$(LIBNAME).so $(OBJ) $(LDFLAGS)
+	$(CC) -shared -fvisibility=hidden -o lib/lib$(LIBNAME).so $(OBJ) $(LDFLAGS)
 	rm -f $(OBJ)
 
 static: $(OBJ)
@@ -48,7 +51,7 @@ compile_shaders:
 
 example:
 	./compile.sh
-	$(CC) $(CFLAGS) example.c -o $(EXENAME) $(LDFLAGS)
+	$(CC) $(CFLAGS) example.c -o $(EXENAME) $(LDFLAGS) -l$(LIBNAME)
 
 run: example
 	./compile.sh

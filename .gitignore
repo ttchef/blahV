@@ -6,3 +6,4 @@ vendor/
 *.obj
 compile_commands.json
 .cache/
+main

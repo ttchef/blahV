@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <threads.h>
 
-#include "blahV/blahV_log.h"
+#include "blahV/core/blahV_log.h"
 
 _Thread_local blvErrorInfo blv_error_last = {0};
 bool blv_error_log_enable = true;

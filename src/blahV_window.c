@@ -1,11 +1,11 @@
 
-#include "blahV/blahV_config.h"
-#include "blahV/blahV_context.h"
-#include "blahV/blahV_window.h"
-#include "blahV/blahV_device.h"
-#include "blahV/blahV_log.h"
-#include "blahV/blahV_swapchain.h"
-#include "blahV/blahV_utils.h"
+#include "blahV/core/blahV_config.h"
+#include "blahV/core/blahV_context.h"
+#include "blahV/vulkan/blahV_window.h"
+#include "blahV/vulkan/blahV_device.h"
+#include "blahV/core/blahV_log.h"
+#include "blahV/vulkan/blahV_swapchain.h"
+#include "blahV/core/blahV_utils.h"
 
 #include <GLFW/glfw3.h>
 

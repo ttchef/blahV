@@ -12,6 +12,7 @@
 #include "blahV/renderer/blahV_renderer.h"
 #include "blahV_log.h"
 #include "blahV_config.h"
+#include "blahV_globals.h"
 
 struct blvContext {
     blvWindow window;
@@ -25,7 +26,7 @@ struct blvContext {
     blvRenderer renderer;
 };
 
-BLV_Result blvVulkanInit(blvContext* context);
+BLVAPI BLV_Result blvVulkanInit(blvContext* context);
 BLV_Result blvUpdate(blvContext* context);
 void blvDeinit(blvContext* context);
 

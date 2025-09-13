@@ -2,8 +2,8 @@
 #ifndef BLAHV_UTILS_H
 #define BLAHV_UTILS_H
 
-#include "blahV/blahV_log.h"
-#include "blahV_context.h"
+#include "blahV/core/blahV_log.h"
+#include "blahV/core/blahV_context.h"
 
 #include <stdint.h>
 #include <vulkan/vulkan.h>

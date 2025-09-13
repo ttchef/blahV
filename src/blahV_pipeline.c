@@ -1,11 +1,11 @@
 
-#include "blahV/blahV_pipeline.h"
-#include "blahV/blahV_log.h"
-#include "blahV/blahV_context.h"
-#include "blahV/blahV_utils.h"
-#include "blahV/blahV_buffer.h"
-#include "blahV/blahV_math.h"
-#include "blahV/blahV_push_constants.h"
+#include "blahV/vulkan/blahV_pipeline.h"
+#include "blahV/core/blahV_log.h"
+#include "blahV/core/blahV_context.h"
+#include "blahV/core/blahV_utils.h"
+#include "blahV/vulkan/blahV_buffer.h"
+#include "blahV/math/blahV_math.h"
+#include "blahV/vulkan/blahV_push_constants.h"
 
 #include <complex.h>
 #include <stdlib.h>

@@ -1,7 +1,7 @@
 
-#include "blahV/blahV_buffer.h"
-#include "blahV/blahV_log.h"
-#include "blahV/blahV_utils.h"
+#include "blahV/vulkan/blahV_buffer.h"
+#include "blahV/core/blahV_log.h"
+#include "blahV/core/blahV_utils.h"
 
 #include <vulkan/vulkan_core.h>
 
