@@ -1,5 +1,5 @@
 
-CC = gcc
+CC = gcc # clang
 CFLAGS = -Wall -Wextra -Wconversion -g -Iinclude -Ivendor -fvisibility=hidden
 LDFLAGS = -lglfw -lm -lvulkan 
 
@@ -58,7 +58,7 @@ run: example
 	./$(EXENAME)
 
 cloc:
-	cloc . --exclude-dir=vendor,build,third_party,bin
+	cloc . --exclude-dir=vendor,build,third_party,bin,compile_commands.json
 
 clean:
 	rm -rf lib $(OBJ) bin

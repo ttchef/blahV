@@ -34,12 +34,14 @@ typedef enum {
     BLV_VULKAN_BUFFER_ERROR = -19,
     BLV_VULKAN_MEMORY_ERROR = -20,
     BLV_VULKAN_DESCRIPTOR_SET_ERROR = -21,
+    BLV_CAMERA_ERROR = -22,
 } BLV_Result;
 
 typedef enum {
-    BLV_LOG_DEBUG = 0,
-    BLV_LOG_WARNING = 1,
-    BLV_LOG_ERROR = 2,
+    BLV_LOG_INFO = 0,
+    BLV_LOG_DEBUG = 1,
+    BLV_LOG_WARNING = 2,
+    BLV_LOG_ERROR = 3,
 } BLV_Log_Level;
 
 typedef struct {
@@ -86,22 +88,6 @@ BLVAPI void blvErrorSetLogLevel(BLV_Log_Level level);
         if (blv_error_log_enable && blv_error_log_level <= log_level) { \
             printf("[%s] ", blvErrorLogLevelString(log_level)); \
             printf(msg, ##__VA_ARGS__); \
-        } \
-    } while(0)
-
-
-
-#define BLV_CHECK(val) \
-    do { \
-        if ((val) != BLV_OK) { \
-            BLV_SET_ERROR((val), "General Error"); \
-        } \
-    } while(0)
-
-#define BLV_CHECK_RETURN(val) \
-    do { \
-        if ((val) != BLV_OK) { \
-            return (val); \
         } \
     } while(0)
 

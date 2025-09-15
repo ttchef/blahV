@@ -45,6 +45,7 @@ const char* blvErrorString(BLV_Result result) {
         case BLV_VULKAN_BUFFER_ERROR:               return "Vulkan Buffer Error";
         case BLV_VULKAN_MEMORY_ERROR:               return "Vulkan Memory Error";
         case BLV_VULKAN_DESCRIPTOR_SET_ERROR:       return "Vulkan Descriptor Set Error";
+        case BLV_CAMERA_ERROR:                      return "Camera Error";
         default:                                    return "Unkown Error";
     }
 }

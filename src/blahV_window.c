@@ -114,3 +114,12 @@ bool blvWindowFinishedResize(blvContext* context) {
     return false;
 }
 
+bool blvWindowGetKeyState(blvContext *context, int32_t key, int32_t state) {
+    if (glfwGetKey(context->window.glfw_window, key) == state) return true;
+    return false;
+}
+
+double blvWindowGetTime() {
+    return glfwGetTime();
+}
+

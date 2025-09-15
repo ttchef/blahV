@@ -124,6 +124,9 @@ BLV_Result blvCommandBufferRecord(blvContext *context, uint32_t frame_index, uin
     vkCmdSetViewport(context->command_pool.buffers[frame_index], 0, 1, &viewport);
     vkCmdSetScissor(context->command_pool.buffers[frame_index], 0, 1, &scissor);
 
+    vkCmdBindDescriptorSets(context->command_pool.buffers[frame_index], VK_PIPELINE_BIND_POINT_GRAPHICS, context->graphcis_pipeline.layout,
+                            0, 1, &context->graphcis_pipeline.descriptor_sets[frame_index], 0, NULL);
+
     // Draw Calls
     blvRendererRenderQueue(context, frame_index);
 

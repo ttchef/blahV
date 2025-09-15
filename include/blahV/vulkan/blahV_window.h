@@ -9,6 +9,11 @@
 #include "blahV/core/blahV_log.h"
 #include "blahV/core/blahV_config.h"
 
+#include "blahV/vulkan/blahV_glfw_keys.h"
+
+#define BLV_KEY_STATE_PRESS GLFW_PRESS
+#define BLV_KEY_STATE_RELEASE GLFW_RELEASE
+
 typedef struct blvContext blvContext;
 
 // Function Pointers
@@ -35,7 +40,11 @@ BLV_Result blvWindowDeinit(blvContext* context);
 
 BLVAPI bool blvWindowShouldQuit(blvContext* context);
 void blvWindowPollEvents(); 
-void blvWindowSetResizeCallback(blvWindow window, blvWindowResizeCallbackPFN function);
+BLVAPI void blvWindowSetResizeCallback(blvWindow window, blvWindowResizeCallbackPFN function);
 bool blvWindowFinishedResize(blvContext* context);
+BLVAPI double blvWindowGetTime();
+
+// Input
+BLVAPI bool blvWindowGetKeyState(blvContext* context, int32_t key, int32_t state);
 
 #endif

@@ -2,6 +2,7 @@
 #include "blahV/vulkan/blahV_swapchain.h"
 #include "blahV/core/blahV_log.h"
 #include "blahV/core/blahV_context.h"
+#include "blahV/core/blahV_utils.h"
 
 #include <stdlib.h>
 #include <vulkan/vulkan_core.h>
@@ -11,7 +12,7 @@ BLV_Result blvSwapchainInit(blvContext *context, blvSwapchainCreateInfo* create_
     blvSwapchainCreateInfo info = {0};
 
     if (!create_info) {
-        BLV_LOG(BLV_LOG_WARNING, "Not specified swapchain create_info will use the default values!\n");
+        BLV_LOG(BLV_LOG_DEBUG, "Not specified swapchain create_info will use the default values!\n");
         info.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
         create_info = &info;
     }

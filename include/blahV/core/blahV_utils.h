@@ -13,6 +13,22 @@
 #define BLV_NOT_ZERO(val) ((val) != 0 ? true : false)
 #define BLV_IS_ZERO(val) ((val) == 0 ? true : false)
 
+
+#define BLV_CHECK(val) \
+    do { \
+        if ((val) != BLV_OK) { \
+            BLV_SET_ERROR((val), "General Error"); \
+        } \
+    } while(0)
+
+#define BLV_CHECK_RETURN(val) \
+    do { \
+        if ((val) != BLV_OK) { \
+            return (val); \
+        } \
+    } while(0)
+
+
 typedef struct {
     uint32_t major;
     uint32_t minor;

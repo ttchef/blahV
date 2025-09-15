@@ -13,6 +13,14 @@ typedef HMM_Mat4 blvMat4;
 #define blvV3(x, y, z)      (HMM_V3(x, y, z))
 #define blvV4(x, y, z, w)   (HMM_V4(x, y, z, w))
 
+// Vector Math
+#define blvV3MulF(vec, f) (HMM_MulV3F(vec, f))
+#define blvV3Add(a, b) (HMM_AddV3(a, b))
+#define blvV3Sub(a, b) (HMM_SubV3(a, b))
+#define blvV3Mul(a, b) (HMM_MulV3(a, b))
+#define blvV3Norm(vec) (HMM_NormV3(vec))
+#define blvV3Cross(a, b) (HMM_Cross(a, b))
+
 // Matrix Math 
 #define blvMat4Mul(a, b) (HMM_MulM4(a, b))
 

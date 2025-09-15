@@ -12,8 +12,8 @@ typedef enum {
 } blvCameraProjectionType;
 
 typedef enum {
-    BLV_CAMERA_SELF_MANAGED,
-    BLV_CAMERA_FREE_MOVE,
+    BLV_CAMERA_TYPE_SELF_MANAGED,
+    BLV_CAMERA_TYPE_FREE_CAM,
 } blvCameraType;
 
 typedef struct {
@@ -30,17 +30,19 @@ typedef struct {
     float sensitivity;
     float yaw;
     float pitch;
+    float fov;
+    blvCameraType type;
 
     blvVec3 position;
     blvVec3 direction;
     blvVec3 up;
-
-    blvMat4 view_matrix;
-    blvMat4 proj_matrix;
-    blvMat4 view_proj_matrix;
 } blvCamera;
 
 BLVAPI blvCamera blvCameraInit(blvCameraCreateInfo* create_info);
-void blvCameraDeinit();
+
+// Only for camera types != BLV_CAMERA_MANAGED
+BLVAPI BLV_Result blvCameraUpdate(blvContext* context, blvCamera* camera, double* delta_time);
+void blvCameraUpdateFreeCam(blvContext* context, blvCamera* camera, double delta_time);
+BLV_Result blvCameraSendMatrices(blvContext* context, blvCamera* camera);
 
 #endif

@@ -10,6 +10,7 @@
 #include "blahV/vulkan/blahV_swapchain.h"
 #include "blahV/vulkan/blahV_window.h"
 #include "blahV/renderer/blahV_rectangle.h"
+#include "blahV/core/blahV_utils.h"
 #include <vulkan/vulkan_core.h>
 
 BLV_Result blvVulkanInit(blvContext *context) {

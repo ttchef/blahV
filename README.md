@@ -43,7 +43,15 @@ int main() {
 
 ```
 
+# Building
+
 # Dependencies
  - Vulkan (couldnt be guessed WOWOWOW)
  - glfw
  - Handmade Math (math library)
+
+# TODO
+ - Fix Config structure
+ - Implement Camera
+
+
