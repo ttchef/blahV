@@ -22,6 +22,9 @@ typedef struct {
     blvCameraProjectionType projection_type;
     float speed;
     float sensitivity;
+    float fov;
+    float near;
+    float far;
     blvVec3 position;
     blvVec3 direction;
 } blvCameraCreateInfo;
@@ -32,6 +35,8 @@ typedef struct {
     float yaw;
     float pitch;
     float fov;
+    float near;
+    float far;
     blvCameraType type;
 
     blvVec3 position;

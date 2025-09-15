@@ -15,6 +15,8 @@ blvCamera blvCameraInit(blvCameraCreateInfo *create_info) {
             .fov = 45.0f,
             .yaw = 0.0f,
             .pitch = 0.0f,
+            .near = 0.01f,
+            .far = 100.0f,
             .up = blvV3(0.0f, -1.0f, 0.0f),
             .position = blvV3(0.0f, 0.0f, 0.0f),
             .direction = blvV3(0.0f, 0.0f, -1.0f),
@@ -26,7 +28,25 @@ blvCamera blvCameraInit(blvCameraCreateInfo *create_info) {
     if (BLV_IS_ZERO(create_info->speed)) camera.speed = 5.0f;
     else camera.speed = create_info->speed;
 
-    camera.type = create_info->type;
+    if (BLV_IS_ZERO(create_info->sensitivity)) camera.sensitivity = 0.26f;
+    else camera.sensitivity = create_info->sensitivity;
+
+    if (BLV_IS_ZERO(create_info->fov)) camera.fov = 45.0f;
+    else camera.fov = create_info->fov;
+
+    if (BLV_IS_ZERO(create_info->near)) camera.near = 0.01f;
+    else camera.near = create_info->near;
+
+    if (BLV_IS_ZERO(create_info->far)) camera.far = 100.0f;
+    else camera.far = create_info->far;
+
+    if (BLV_IS_ZERO(create_info->type)) camera.type = BLV_CAMERA_TYPE_SELF_MANAGED;
+    else camera.type = create_info->type;
+
+    camera.up = blvV3(0.0f, -1.0f, 0.0f);
+    camera.position = blvV3(0.0f, 0.0f, -2.0f);
+    camera.direction = blvV3(0.0f, 0.0f, 1.0f);
+
 
     // TOOD: ...
 
@@ -47,7 +67,7 @@ BLV_Result blvCameraUpdateBlvCams(blvContext* context, blvCamera* camera, double
         return BLV_ERROR;
     }
 
-    double dt = delta_time ? *delta_time : 1;
+    double dt = delta_time ? (*delta_time) : 1;
 
     if (camera->type == BLV_CAMERA_TYPE_FREE_CAM) {
         blvCameraUpdateFreeCam(context, camera, dt);
@@ -70,7 +90,7 @@ void blvCameraUpdateFreeCam(blvContext* context, blvCamera *camera, double delta
         blvVec3 tmp = blvV3MulF(blvV3MulF(blvV3Norm(blvV3Cross(camera->direction, camera->up)), (float)delta_time), camera->speed);
         camera->position = blvV3Add(camera->position, tmp);
     }
-    if (blvWindowGetKeyState(context, BLV_KEY_A, BLV_KEY_STATE_PRESS)) {
+    if (blvWindowGetKeyState(context, BLV_KEY_D, BLV_KEY_STATE_PRESS)) {
         blvVec3 tmp = blvV3MulF(blvV3MulF(blvV3Norm(blvV3Cross(camera->direction, camera->up)), (float)delta_time), camera->speed);
         camera->position = blvV3Sub(camera->position, tmp);
     }
@@ -78,7 +98,9 @@ void blvCameraUpdateFreeCam(blvContext* context, blvCamera *camera, double delta
 
 BLV_Result blvCameraSendMatrices(blvContext *context, blvCamera *camera) {
 
-    blvMat4 view_proj_matrix = blvMat4Translate(blvV3(0.0f, 0.0f, 0.0f));
+    blvMat4 view_matrix = blvMat4LookA_LH(camera->position, blvV3Add(camera->position, camera->direction), camera->up);
+    blvMat4 proj_matrix = blvMat4Perspective_LH_ZO(camera->fov, context->window.width / context->window.height, camera->near, camera->far);
+    blvMat4 view_proj_matrix = blvMat4Mul(proj_matrix, view_matrix);
 
     void* mapped;
     vkMapMemory(context->device.logical_device, context->graphcis_pipeline.uniform_buffers[context->renderer.frame_index].memory, 0, sizeof(blvMat4), 0, &mapped);
