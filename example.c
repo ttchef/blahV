@@ -1,6 +1,4 @@
 
-#include "blahV/renderer/blahV_camera.h"
-#include "blahV/vulkan/blahV_window.h"
 #include <stdio.h>
 #include <blahV/blahV.h>
 
@@ -8,7 +6,7 @@ int main() {
     
     blvContext blv_context = {0};
     blvErrorSetLogLevel(BLV_LOG_DEBUG);
-    blvErrorEnableValidationLayers(true);
+    blvErrorEnableValidationLayers(false);
 
     blvConfig blv_config = {0};
     blv_config.soft_resizing = true;

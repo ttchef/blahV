@@ -5,6 +5,7 @@
 #include "blahV/math/blahV_math.h"
 #include "blahV/core/blahV_log.h"
 #include "blahV/core/blahV_context.h"
+#include "blahV/vulkan/blahV_device.h"
 
 typedef enum {
     BLV_CAMERA_PROJECTION_TYPE_PERSPECTIVE,
@@ -42,6 +43,7 @@ BLVAPI blvCamera blvCameraInit(blvCameraCreateInfo* create_info);
 
 // Only for camera types != BLV_CAMERA_MANAGED
 BLVAPI BLV_Result blvCameraUpdate(blvContext* context, blvCamera* camera, double* delta_time);
+BLV_Result blvCameraUpdateBlvCams(blvContext* context, blvCamera* camera, double* delta_time);
 void blvCameraUpdateFreeCam(blvContext* context, blvCamera* camera, double delta_time);
 BLV_Result blvCameraSendMatrices(blvContext* context, blvCamera* camera);
 

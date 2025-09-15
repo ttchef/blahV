@@ -33,14 +33,17 @@ blvCamera blvCameraInit(blvCameraCreateInfo *create_info) {
     return camera;
 }
 
-BLV_Result blvCameraUpdate(blvContext* context, blvCamera* camera, double* delta_time) {
+BLV_Result blvCameraUpdate(blvContext *context, blvCamera *camera, double *delta_time) {
+
+    if (camera->type != BLV_CAMERA_TYPE_SELF_MANAGED) blvCameraUpdateBlvCams(context, camera, delta_time);
+    blvCameraSendMatrices(context, camera);
+
+    return BLV_OK;
+}
+
+BLV_Result blvCameraUpdateBlvCams(blvContext* context, blvCamera* camera, double* delta_time) {
     if (!camera) {
         BLV_SET_ERROR(BLV_CAMERA_ERROR, "Passed NULL as a camera parameter");
-        return BLV_ERROR;
-    }
-
-    if (camera->type == BLV_CAMERA_TYPE_SELF_MANAGED) {
-        BLV_SET_ERROR(BLV_CAMERA_ERROR, "Camera type is self managed");
         return BLV_ERROR;
     }
 
@@ -50,9 +53,7 @@ BLV_Result blvCameraUpdate(blvContext* context, blvCamera* camera, double* delta
         blvCameraUpdateFreeCam(context, camera, dt);
 
     }
-
-    blvCameraSendMatrices(context, camera);
-
+  
     return BLV_OK;
 }
 
