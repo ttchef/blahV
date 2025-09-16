@@ -29,8 +29,10 @@ int main() {
     }
 
     blvCameraCreateInfo camera_create_info = { 
-        .speed = 1.0f,
-        .sensitivity = 100.0f,
+        .speed = 5.0f,
+        .sensitivity = 0.05f,
+        .near = 0.01f,
+        .far = 1000.0f,
         .position = blvV3(0.0f, 0.0f, 0.0f),
         .direction = blvV3(0.0f, 0.0f, -1.0f),
         .projection_type = BLV_CAMERA_PROJECTION_TYPE_PERSPECTIVE,
