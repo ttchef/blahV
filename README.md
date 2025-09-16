@@ -69,6 +69,16 @@ int main() {
 
 # Building
 
+Vulkan And GLFW must be installed manually
+For Handmande Math
+Clone Repo with submodules:
+
+```bash
+
+git clone --recurse-submodules https://github.com/ttchef/blahV.git
+
+```
+
 To build and run example: 
 
 ```bash
