@@ -69,6 +69,23 @@ int main() {
 
 # Building
 
+To build and run example: 
+
+```bash
+
+chmod +x run.sh
+./run.sh
+
+```
+
+To build library 
+
+```bash 
+
+sudo make install BUILD=static
+sudo make install BUILD=shared # For shared lib
+```
+
 # Dependencies
  - Vulkan (couldnt be guessed WOWOWOW)
  - glfw
