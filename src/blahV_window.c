@@ -139,3 +139,7 @@ void blvWindowSetInputMode(blvContext *context, int32_t mode, int32_t value) {
     glfwSetInputMode(context->window.glfw_window, mode, value);
 }
 
+void blvWindowSetCursorPos(blvContext *context, double pos_x, double pos_y) {
+    glfwSetCursorPos(context->window.glfw_window, pos_x, pos_y);
+}
+

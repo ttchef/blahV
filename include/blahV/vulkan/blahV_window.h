@@ -53,5 +53,6 @@ BLVAPI double blvWindowGetTime();
 BLVAPI bool blvWindowGetKeyState(blvContext* context, int32_t key, int32_t state);
 BLVAPI BLV_Result blvWindowGetCursorPosition(blvContext* context, double* pos_x, double* pos_y);
 BLVAPI void blvWindowSetInputMode(blvContext* context, int32_t mode, int32_t value);
+BLVAPI void blvWindowSetCursorPos(blvContext* context, double pos_x, double pos_y);
 
 #endif

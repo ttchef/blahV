@@ -119,8 +119,11 @@ void blvCameraUpdateFreeCam(blvContext* context, blvCamera *camera, double delta
     blvWindowGetCursorPosition(context, &pos_x, &pos_y);
     double dx = pos_x - camera->last_mouse_pos_x;
     double dy = pos_y - camera->last_mouse_pos_y;
-    camera->last_mouse_pos_x = pos_x;
-    camera->last_mouse_pos_y = pos_y;
+
+    // To make the cursor not exit the window
+    blvWindowSetCursorPos(context, context->window.width / 2.0, context->window.height / 2.0);
+    camera->last_mouse_pos_x = context->window.width / 2.0;
+    camera->last_mouse_pos_y = context->window.height / 2.0;
 
     camera->yaw += (float)dx * camera->sensitivity;
     camera->pitch -= (float)dy * camera->sensitivity;
@@ -146,6 +149,8 @@ BLV_Result blvCameraSendMatrices(blvContext *context, blvCamera *camera) {
     vkMapMemory(context->device.logical_device, context->graphcis_pipeline.uniform_buffers[context->renderer.frame_index].memory, 0, sizeof(blvMat4), 0, &mapped);
     memcpy(mapped, &view_proj_matrix, sizeof(view_proj_matrix));
     vkUnmapMemory(context->device.logical_device, context->graphcis_pipeline.uniform_buffers[context->renderer.frame_index].memory);
+
+    return BLV_OK;
 
 }
 

@@ -76,6 +76,8 @@ int main() {
 
 # TODO
  - Fix Config structure
- - Implement Camera
+ - Extend the Camera
+ - Add Draw Cube or smth
+
 
 
