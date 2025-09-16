@@ -38,6 +38,10 @@ typedef struct {
     float near;
     float far;
     blvCameraType type;
+    
+    bool first_mouse;
+    double last_mouse_pos_x;
+    double last_mouse_pos_y;
 
     blvVec3 position;
     blvVec3 direction;

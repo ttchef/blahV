@@ -34,5 +34,19 @@ typedef HMM_Mat4 blvMat4;
 #define blvMat4LookA_RH(eye, center, up) (HMM_LookAt_RH(eye, center, up))
 #define blvMat4LookA_LH(eye, center, up) (HMM_LookAt_LH(eye, center, up))
 
+// Trigometrix functions 
+#define blvMathSin(x) (sin(x))
+#define blvMathCos(x) (cos(x))
+#define blvMathTan(x) (tan(x))
+
+// Functions
+static inline double blvMathDegToRad(double deg) {
+    return deg * M_PI / 180.0;
+}
+
+static inline double blvMathRadToDeg(double rad) {
+    return rad * 180.0 / M_PI;
+}
+
 #endif
 

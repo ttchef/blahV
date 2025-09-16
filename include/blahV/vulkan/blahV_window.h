@@ -14,6 +14,11 @@
 #define BLV_KEY_STATE_PRESS GLFW_PRESS
 #define BLV_KEY_STATE_RELEASE GLFW_RELEASE
 
+// TODO: Add glfw3.h enums 
+#define BLV_CURSOR GLFW_CURSOR
+#define BLV_CURSOR_DISABLED GLFW_CURSOR_DISABLED
+#define BLV_CURSOR_NORMAL GLFW_CURSOR_NORMAL
+
 typedef struct blvContext blvContext;
 
 // Function Pointers
@@ -46,5 +51,7 @@ BLVAPI double blvWindowGetTime();
 
 // Input
 BLVAPI bool blvWindowGetKeyState(blvContext* context, int32_t key, int32_t state);
+BLVAPI BLV_Result blvWindowGetCursorPosition(blvContext* context, double* pos_x, double* pos_y);
+BLVAPI void blvWindowSetInputMode(blvContext* context, int32_t mode, int32_t value);
 
 #endif

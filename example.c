@@ -23,8 +23,8 @@ int main() {
     }
 
     blvCameraCreateInfo camera_create_info = { 
-        .speed = 0.05f,
-        .sensitivity = 100.0f,
+        .speed = 5.0f,
+        .sensitivity = 0.05f,
         .near = 0.01f,
         .far = 1000.0f,
         .position = blvV3(0.0f, 0.0f, 0.0f),
@@ -43,7 +43,7 @@ int main() {
         double delta_time = current_time - last_time;
         last_time = current_time;
 
-        blvCameraUpdate(&blv_context, &camera, NULL);
+        blvCameraUpdate(&blv_context, &camera, &delta_time);
         blvUpdate(&blv_context);
 
         blvRectangleDraw(&blv_context, -0.5f, -0.5f, 0.25f, 0.25f, blvV4(1.0f, 0.0f, 0.0f, 1.0f));

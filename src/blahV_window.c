@@ -125,3 +125,17 @@ double blvWindowGetTime() {
     return glfwGetTime();
 }
 
+BLV_Result blvWindowGetCursorPosition(blvContext *context, double *pos_x, double *pos_y) {
+    if (!pos_x || !pos_y) {
+        BLV_SET_ERROR(BLV_INVALID_FUNCTION_INPUT, "Input Pointers are NULL");
+        return BLV_ERROR;
+    }
+    
+    glfwGetCursorPos(context->window.glfw_window, pos_x, pos_y);
+    return BLV_OK;
+}
+
+void blvWindowSetInputMode(blvContext *context, int32_t mode, int32_t value) {
+    glfwSetInputMode(context->window.glfw_window, mode, value);
+}
+

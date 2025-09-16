@@ -4,6 +4,7 @@
 #include "blahV/core/blahV_utils.h"
 #include "blahV/vulkan/blahV_window.h"
 #include "blahV/math/blahV_math.h"
+#include <GLFW/glfw3.h>
 #include <vulkan/vulkan_core.h>
 
 blvCamera blvCameraInit(blvCameraCreateInfo *create_info) {
@@ -17,6 +18,9 @@ blvCamera blvCameraInit(blvCameraCreateInfo *create_info) {
             .pitch = 0.0f,
             .near = 0.01f,
             .far = 100.0f,
+            .first_mouse = true,
+            .last_mouse_pos_x = 0.0, 
+            .last_mouse_pos_y = 0.0,
             .up = blvV3(0.0f, -1.0f, 0.0f),
             .position = blvV3(0.0f, 0.0f, 0.0f),
             .direction = blvV3(0.0f, 0.0f, -1.0f),
@@ -78,6 +82,10 @@ BLV_Result blvCameraUpdateBlvCams(blvContext* context, blvCamera* camera, double
 }
 
 void blvCameraUpdateFreeCam(blvContext* context, blvCamera *camera, double delta_time) {
+
+    blvWindowSetInputMode(context, BLV_CURSOR, BLV_CURSOR_DISABLED);
+
+    // Keyboard
     if (blvWindowGetKeyState(context, BLV_KEY_W, BLV_KEY_STATE_PRESS)) {
         blvVec3 tmp = blvV3MulF(blvV3MulF(blvV3Norm(blvV3Mul(camera->direction, blvV3(1.0f, 0.0f, 1.0f))), (float)delta_time), camera->speed);
         camera->position = blvV3Add(camera->position, tmp);
@@ -94,6 +102,38 @@ void blvCameraUpdateFreeCam(blvContext* context, blvCamera *camera, double delta
         blvVec3 tmp = blvV3MulF(blvV3MulF(blvV3Norm(blvV3Cross(camera->direction, camera->up)), (float)delta_time), camera->speed);
         camera->position = blvV3Sub(camera->position, tmp);
     }
+    if (blvWindowGetKeyState(context, BLV_KEY_SPACE, BLV_KEY_STATE_PRESS)) {
+        blvVec3 tmp = blvV3MulF(blvV3MulF(blvV3Norm(camera->up), (float)delta_time), camera->speed);
+        camera->position = blvV3Sub(camera->position, tmp);
+    }
+    if (blvWindowGetKeyState(context, BLV_KEY_LEFT_SHIFT, BLV_KEY_STATE_PRESS)) {
+        blvVec3 tmp = blvV3MulF(blvV3MulF(blvV3Norm(camera->up), (float)delta_time), camera->speed);
+        camera->position = blvV3Add(camera->position, tmp);
+    }
+    if (blvWindowGetKeyState(context, BLV_KEY_T, BLV_KEY_STATE_PRESS)) {
+        blvWindowSetInputMode(context, BLV_CURSOR, BLV_CURSOR_NORMAL);
+    }
+    
+    // Mouse
+    double pos_x, pos_y;
+    blvWindowGetCursorPosition(context, &pos_x, &pos_y);
+    double dx = pos_x - camera->last_mouse_pos_x;
+    double dy = pos_y - camera->last_mouse_pos_y;
+    camera->last_mouse_pos_x = pos_x;
+    camera->last_mouse_pos_y = pos_y;
+
+    camera->yaw += (float)dx * camera->sensitivity;
+    camera->pitch -= (float)dy * camera->sensitivity;
+    
+    if (camera->pitch > 89.0f) camera->pitch = 89.0f;
+    if (camera->pitch < -89.0f) camera->pitch = -89.0f;
+
+    blvVec3 front;
+    front.X = (float)blvMathCos(blvMathDegToRad((float)camera->pitch)) * (float)blvMathSin(blvMathDegToRad((float)camera->yaw));
+    front.Y = (float)blvMathSin(blvMathDegToRad(camera->pitch));
+    front.Z = (-(float)blvMathCos(blvMathDegToRad(camera->pitch))) * (float)blvMathCos(blvMathDegToRad(camera->yaw));
+    camera->direction = blvV3Norm(front);
+
 }
 
 BLV_Result blvCameraSendMatrices(blvContext *context, blvCamera *camera) {
