@@ -8,11 +8,12 @@ int main() {
     blvErrorSetLogLevel(BLV_LOG_DEBUG);
     blvErrorEnableValidationLayers(false);
 
+    // Default Conifg
     blvConfig blv_config = {0};
-    blv_config.soft_resizing = true;
+    blvConfigInit(&blv_context, &blv_config);
 
     blvWindowCreateInfo window_create_info = {800, 600, "Hello BLAHV"};
-    if (blvWindowInit(&blv_context, &window_create_info, &blv_config) != BLV_OK) {
+    if (blvWindowInit(&blv_context, &window_create_info) != BLV_OK) {
         fprintf(stderr, "Failed to create a blv window!\n");
         return -1;
     }

@@ -24,20 +24,7 @@ void blvWindowResizeCallbackSoftResizing(GLFWwindow* window, int width, int heig
 }
 
 
-BLV_Result blvWindowInit(blvContext* context, blvWindowCreateInfo* createInfo, blvConfig* config) {
-    if (!config) {
-        blvConfigInit(context);
-        BLV_LOG(BLV_LOG_DEBUG, "Created Default Config");
-    }
-    else {
-        if (BLV_IS_ZERO(config->frames_in_flight)) {
-            config->frames_in_flight = 3;
-        }
-        if (BLV_IS_ZERO(config->soft_resizing)) {
-            config->soft_resizing = true;
-        }
-        context->config = *config;
-    }
+BLV_Result blvWindowInit(blvContext* context, blvWindowCreateInfo* createInfo) {
 
     if (!glfwInit()) {
         BLV_SET_ERROR(BLV_GLFW_ERROR, "Failed to init glfw!");

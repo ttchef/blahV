@@ -13,7 +13,7 @@ typedef struct {
     bool soft_resizing;
 } blvConfig;
 
-BLV_Result blvConfigInit(blvContext* context);
+BLVAPI BLV_Result blvConfigInit(blvContext* context, blvConfig* config);
 
 #endif
 

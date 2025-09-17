@@ -40,7 +40,7 @@ typedef struct {
     const char* name;
 } blvWindowCreateInfo;
 
-BLVAPI BLV_Result blvWindowInit(blvContext* context, blvWindowCreateInfo* createInfo, blvConfig* config);
+BLVAPI BLV_Result blvWindowInit(blvContext* context, blvWindowCreateInfo* createInfo);
 BLV_Result blvWindowDeinit(blvContext* context);
 
 BLVAPI bool blvWindowShouldQuit(blvContext* context);
