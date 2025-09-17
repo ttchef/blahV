@@ -31,8 +31,11 @@ typedef HMM_Mat4 blvMat4;
 #define blvMat4Perspective_RH_ZO(fov, aspect_ratio, near, far) (HMM_Perspective_RH_ZO(fov, aspect_ratio, near, far))
 #define blvMat4Perspective_LH_NO(fov, aspect_ratio, near, far) (HMM_Perspective_LH_NO(fov, aspect_ratio, near, far))
 #define blvMat4Perspective_LH_ZO(fov, aspect_ratio, near, far) (HMM_Perspective_LH_ZO(fov, aspect_ratio, near, far))
+#define blvMat4Orthographic_RH_NO(left, right, bottom, top, near, far) (HMM_Orthographic_RH_NO(left, right, bottom, top, near, far))
+#define blvMat4Orthographic_RH_ZO(left, right, bottom, top, near, far) (HMM_Orthographic_RH_ZO(left, right, bottom, top, near, far))
+#define blvMat4Orthographic_LH_NO(left, right, bottom, top, near, far) (HMM_Orthographic_LH_NO(left, right, bottom, top, near, far))
+#define blvMat4Orthographic_LH_ZO(left, right, bottom, top, near, far) (HMM_Orthographic_LH_ZO(left, right, bottom, top, near, far))
 #define blvMat4LookA_RH(eye, center, up) (HMM_LookAt_RH(eye, center, up))
 #define blvMat4LookA_LH(eye, center, up) (HMM_LookAt_LH(eye, center, up))
-
 
 #endif

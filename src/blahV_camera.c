@@ -2,6 +2,7 @@
 #include "blahV/renderer/blahV_camera.h"
 #include "blahV/core/blahV_log.h"
 #include "blahV/core/blahV_utils.h"
+#include "blahV/math/blahV_linear_algebra.h"
 #include "blahV/vulkan/blahV_window.h"
 #include "blahV/math/blahV_math.h"
 #include <GLFW/glfw3.h>
@@ -24,6 +25,7 @@ blvCamera blvCameraInit(blvCameraCreateInfo *create_info) {
             .up = blvV3(0.0f, -1.0f, 0.0f),
             .position = blvV3(0.0f, 0.0f, 0.0f),
             .direction = blvV3(0.0f, 0.0f, -1.0f),
+            .proj_type = BLV_CAMERA_PROJECTION_TYPE_PERSPECTIVE,
             .type = BLV_CAMERA_TYPE_SELF_MANAGED,
         };
     }
@@ -46,6 +48,9 @@ blvCamera blvCameraInit(blvCameraCreateInfo *create_info) {
 
     if (BLV_IS_ZERO(create_info->type)) camera.type = BLV_CAMERA_TYPE_SELF_MANAGED;
     else camera.type = create_info->type;
+
+    if (BLV_IS_ZERO(create_info->proj_type)) camera.proj_type = BLV_CAMERA_PROJECTION_TYPE_PERSPECTIVE;
+    else camera.proj_type = create_info->proj_type;
 
     camera.up = blvV3(0.0f, -1.0f, 0.0f);
     camera.position = blvV3(0.0f, 0.0f, -2.0f);
@@ -142,7 +147,15 @@ void blvCameraUpdateFreeCam(blvContext* context, blvCamera *camera, double delta
 BLV_Result blvCameraSendMatrices(blvContext *context, blvCamera *camera) {
 
     blvMat4 view_matrix = blvMat4LookA_LH(camera->position, blvV3Add(camera->position, camera->direction), camera->up);
-    blvMat4 proj_matrix = blvMat4Perspective_LH_ZO(camera->fov, context->window.width / context->window.height, camera->near, camera->far);
+    
+    blvMat4 proj_matrix = {0};
+    if (camera->proj_type == BLV_CAMERA_PROJECTION_TYPE_PERSPECTIVE) {
+        proj_matrix = blvMat4Perspective_LH_ZO(camera->fov, context->window.width / context->window.height, camera->near, camera->far);
+    }
+    else {
+        proj_matrix = blvMat4Orthographic_LH_ZO(-1.0f, 1.0f, -1.0f, 1.0f, camera->near, camera->far);
+    }
+
     blvMat4 view_proj_matrix = blvMat4Mul(proj_matrix, view_matrix);
 
     void* mapped;

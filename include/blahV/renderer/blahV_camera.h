@@ -19,7 +19,7 @@ typedef enum {
 
 typedef struct {
     blvCameraType type;
-    blvCameraProjectionType projection_type;
+    blvCameraProjectionType proj_type;
     float speed;
     float sensitivity;
     float fov;
@@ -38,6 +38,7 @@ typedef struct {
     float near;
     float far;
     blvCameraType type;
+    blvCameraProjectionType proj_type;
     
     bool first_mouse;
     double last_mouse_pos_x;

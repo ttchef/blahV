@@ -36,7 +36,7 @@ int main() {
         .far = 1000.0f,
         .position = blvV3(0.0f, 0.0f, 0.0f),
         .direction = blvV3(0.0f, 0.0f, -1.0f),
-        .projection_type = BLV_CAMERA_PROJECTION_TYPE_PERSPECTIVE,
+        .proj_type = BLV_CAMERA_PROJECTION_TYPE_PERSPECTIVE,
         .type = BLV_CAMERA_TYPE_FREE_CAM,
     };
 
