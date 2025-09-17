@@ -12,9 +12,9 @@
 // Default Window Resize Callback 
 void blvWindowResizeCallbackDefault(GLFWwindow* window, int width, int height) {
     blvContext* context = (blvContext*)glfwGetWindowUserPointer(window);
-    blvSwapchainRecreate(context);
     context->window.width = width;
     context->window.height = height;
+    blvSwapchainRecreate(context);
 }
 
 void blvWindowResizeCallbackSoftResizing(GLFWwindow* window, int width, int height) {

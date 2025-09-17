@@ -70,7 +70,7 @@ int main() {
 # Building
 
 Vulkan And GLFW must be installed manually
-For Handmande Math
+For Handmande Math and stb_image
 Clone Repo with submodules:
 
 ```bash
@@ -100,11 +100,13 @@ sudo make install BUILD=shared # For shared lib
  - Vulkan (couldnt be guessed WOWOWOW)
  - glfw
  - Handmade Math (math library)
+ - Stb_image (image loading)
 
 # TODO
  - Fix Config structure
  - Extend the Camera
  - Add Draw Cube or smth
+ - Textures
 
 
 
