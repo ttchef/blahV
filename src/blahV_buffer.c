@@ -2,10 +2,11 @@
 #include "blahV/vulkan/blahV_buffer.h"
 #include "blahV/core/blahV_log.h"
 #include "blahV/core/blahV_utils.h"
-
+#include "blahV/vulkan/blahV_vkMemory.h"
 #include <vulkan/vulkan_core.h>
 
-BLV_Result blvBufferCreate(blvContext *context, VkDeviceSize size, VkBufferUsageFlags usage,
+// Size in bytes
+BLV_Result blvBufferInit(blvContext *context, VkDeviceSize size, VkBufferUsageFlags usage,
                            VkMemoryPropertyFlags properties, blvBuffer* buffer) {
     VkBufferCreateInfo buffer_info = {0};
     buffer_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -37,26 +38,20 @@ BLV_Result blvBufferCreate(blvContext *context, VkDeviceSize size, VkBufferUsage
 
 BLV_Result blvBufferVertexCreate(blvContext *context, blvBuffer* buffer, void* vertices, uint32_t vertices_count) {
 
+    // TODO fix size thing
     VkDeviceSize buffer_size = sizeof(((uint32_t*)vertices)[0]) * vertices_count;
-    blvBufferCreate(context, buffer_size, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | 
-                    VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, buffer);
-    void* data;
-    vkMapMemory(context->device.logical_device, buffer->memory, 0, buffer_size, 0, &data);
-    memcpy(data, vertices, buffer_size);
-    vkUnmapMemory(context->device.logical_device, buffer->memory);
+    blvBufferInit(context, buffer_size, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, buffer);
+    blvMemoryUploadDataToBuffer(context, buffer, vertices, vertices_count);
 
     return BLV_OK;
 }
 
 BLV_Result blvBufferIndexCreate(blvContext *context, blvBuffer *buffer, void *indices, uint32_t indices_count) {
 
+    // TODO fix size thing
     VkDeviceSize buffer_size = sizeof(((uint32_t*)indices)[0]) * indices_count;
-    blvBufferCreate(context, buffer_size, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | 
-                    VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, buffer);
-    void* data;
-    vkMapMemory(context->device.logical_device, buffer->memory, 0, buffer_size, 0, &data);
-    memcpy(data, indices, buffer_size);
-    vkUnmapMemory(context->device.logical_device, buffer->memory);
+    blvBufferInit(context, buffer_size, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, buffer);
+    blvMemoryUploadDataToBuffer(context, buffer, indices, indices_count);
 
     return BLV_OK;
 }

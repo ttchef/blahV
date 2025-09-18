@@ -175,7 +175,7 @@ BLV_Result blvPipelineInit(blvContext *context, VkVertexInputBindingDescription 
     }
 
     for (int32_t i = 0; i < context->config.frames_in_flight; i++) {
-        blvBufferCreate(context, sizeof(blvMat4), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | 
+        blvBufferInit(context, sizeof(blvMat4), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | 
                         VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &context->graphcis_pipeline.uniform_buffers[i]);
     }
 

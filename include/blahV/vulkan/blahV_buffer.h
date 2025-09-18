@@ -13,7 +13,8 @@ typedef struct {
     VkDeviceMemory memory;
 } blvBuffer;
 
-BLV_Result blvBufferCreate(blvContext* context, VkDeviceSize size, VkBufferUsageFlags usage,
+// Size in bytes btw
+BLV_Result blvBufferInit(blvContext* context, VkDeviceSize size, VkBufferUsageFlags usage,
                             VkMemoryPropertyFlags properties, blvBuffer* buffer);
 BLV_Result blvBufferVertexCreate(blvContext* context, blvBuffer* buffer, void* vertices, uint32_t vertices_count);
 BLV_Result blvBufferIndexCreate(blvContext* context, blvBuffer* buffer, void* indices, uint32_t indices_count);
