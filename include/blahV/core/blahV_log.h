@@ -36,6 +36,8 @@ typedef enum {
     BLV_VULKAN_DESCRIPTOR_SET_ERROR = -21,
     BLV_CAMERA_ERROR = -22,
     BLV_INVALID_FUNCTION_INPUT = -23,
+    BLV_VULKAN_IMAGE_ERROR = -24,
+    BLV_IMAGE_ERROR = -25,
 } BLV_Result;
 
 typedef enum {

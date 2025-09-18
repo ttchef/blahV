@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include <blahV/blahV.h>
+#include <vulkan/vulkan_core.h>
 
 int main() {
     
@@ -35,6 +36,9 @@ int main() {
     };
 
     blvCamera camera = blvCameraInit(&camera_create_info);
+
+    blvImage image;
+    blvImageInit(&blv_context, &image, 512, 512, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT);
 
     double current_time = blvWindowGetTime();
     double last_time = 0.0;

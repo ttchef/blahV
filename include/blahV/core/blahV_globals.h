@@ -12,7 +12,7 @@
         #define BLVAPI __declspec(dllimport)
     #endif
 #else 
-    #define BLVAPI __attribute((visibility("default")))
+    #define BLVAPI __attribute__((visibility("default")))
 #endif
 
 #endif // GLOABLS_H

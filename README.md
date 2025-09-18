@@ -102,11 +102,12 @@ sudo make install BUILD=shared # For shared lib
  - Handmade Math (math library)
  - Stb_image (image loading)
 
-# TODO
+# TODO (Plans for the next days)
  - Fix Config structure
  - Extend the Camera
  - Add Draw Cube or smth
- - Textures
+ - Textures 
+ - Organize c files in folders
 
 
 

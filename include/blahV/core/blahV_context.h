@@ -13,6 +13,7 @@
 #include "blahV_log.h"
 #include "blahV_config.h"
 #include "blahV_globals.h"
+#include "blahV/vulkan/blahV_image.h"
 
 struct blvContext {
     blvWindow window;
