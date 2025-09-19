@@ -146,6 +146,8 @@ BLV_Result blvRendererDrawFrame(blvContext *context) {
     submit_info.signalSemaphoreCount = 1;
     submit_info.pSignalSemaphores = signal_semaphore;
     
+    context->renderer.images_in_flight[image_index] = VK_NULL_HANDLE;
+
     if (vkQueueSubmit(context->graphics_queue.queue, 1, &submit_info, context->renderer.in_flight_fence[context->renderer.frame_index]) != VK_SUCCESS) {
         BLV_SET_ERROR(BLV_VULKAN_QUEUE_SUBMIT_ERROR, "Failed to submit graphics_queue");
         return BLV_ERROR;
@@ -163,8 +165,6 @@ BLV_Result blvRendererDrawFrame(blvContext *context) {
         BLV_SET_ERROR(BLV_ERROR, "Failed to present queus");
         return BLV_ERROR;
     }
-
-    context->renderer.images_in_flight[image_index] = VK_NULL_HANDLE;
 
     context->renderer.frame_index = (context->renderer.frame_index + 1) % context->config.frames_in_flight;
 

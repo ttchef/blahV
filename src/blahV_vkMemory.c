@@ -79,7 +79,7 @@ BLV_Result blvMemoryUploadDataToBuffer(blvContext *context, blvBuffer *buffer, v
     
     // Submit
     VkSubmitInfo submit_info = {0};
-    submit_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_SUBMIT_INFO;
+    submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
     submit_info.commandBufferCount = 1;
     submit_info.pCommandBuffers = &command_buffer;
     

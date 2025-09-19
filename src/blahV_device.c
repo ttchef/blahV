@@ -103,7 +103,7 @@ BLV_Result blvDeviceInstanceInit(blvContext *context) {
     for (uint32_t i = 0; i < BLV_ARRAY_COUNT(wanted_layers); i++) {
         bool found = false;
         for (uint32_t j = 0; j < layer_count; j++) {
-            if (memcmp(wanted_layers[i], layer_properties[j].layerName, strlen(layer_properties[j].layerName)) == 0) {
+            if (strcmp(wanted_layers[i], layer_properties[j].layerName) == 0) {
                 found = true;
                 BLV_LOG(BLV_LOG_DEBUG, "Found Instance Layer: %s\n", wanted_layers[i]);
                 break;
@@ -298,7 +298,7 @@ BLV_Result blvDeviceLogicalDeviceInit(blvContext *context) {
 }
 
 void blvDeviceDeinit(blvContext* context) {
-     vkDestroyDevice(context->device.logical_device, NULL);
+    vkDestroyDevice(context->device.logical_device, NULL);
 
     if (context->device.debug_callback) {
         PFN_vkDestroyDebugUtilsMessengerEXT vkDestroyDebugUtilsMessengerEXT;

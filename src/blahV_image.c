@@ -1,13 +1,12 @@
 
+// STB 
+#define STB_IMAGE_IMPLEMENTATION
+
 #include "blahV/vulkan/blahV_image.h"
 #include "blahV/core/blahV_log.h"
 #include "blahV/core/blahV_context.h"
 #include "blahV/core/blahV_utils.h"
 #include <vulkan/vulkan_core.h>
-
-void blvNothing() {
-
-}
 
 BLV_Result blvImageInit(blvContext *context, blvImage *image, uint32_t width, uint32_t height, VkFormat format, VkImageUsageFlags usage) {
 
@@ -72,5 +71,9 @@ void blvImageDeinit(blvContext *context, blvImage *image) {
     vkDestroyImageView(context->device.logical_device, image->view, NULL);
     vkDestroyImage(context->device.logical_device, image->image, NULL);
     vkFreeMemory(context->device.logical_device, image->memory, NULL);
+}
+
+uint8_t* blvImageLoadStb(const char *path, int32_t *width, int32_t *height, int32_t* channels, int32_t desired_channels) {
+    return stbi_load(path, width, height, channels, desired_channels);
 }
 

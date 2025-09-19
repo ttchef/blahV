@@ -68,7 +68,7 @@ BLV_Result blvCommandBufferRecord(blvContext *context, uint32_t frame_index, uin
     VkRenderingAttachmentInfoKHR color_attachment_info = {0};
     color_attachment_info.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR;
     color_attachment_info.imageView = context->swapchain.image_views[image_index];
-    color_attachment_info.imageLayout = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL_KHR;
+    color_attachment_info.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
     color_attachment_info.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     color_attachment_info.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
     color_attachment_info.clearValue = clear_color;
@@ -81,28 +81,22 @@ BLV_Result blvCommandBufferRecord(blvContext *context, uint32_t frame_index, uin
     render_info.colorAttachmentCount = 1;
     render_info.pColorAttachments = &color_attachment_info;
 
-    /*
-    // Pipeline Barrier
-    VkImageMemoryBarrier2 to_color_barrier = {0};
-    to_color_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2;
-    to_color_barrier.srcStageMask = VK_PIPELINE_STAGE_2_NONE; // from present
-    to_color_barrier.srcAccessMask = 0;
-    to_color_barrier.dstStageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
-    to_color_barrier.dstAccessMask = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT;
-    to_color_barrier.oldLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-    to_color_barrier.newLayout = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL_KHR;
-    to_color_barrier.image = context->swapchain.images[image_index];
-    to_color_barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    to_color_barrier.subresourceRange.levelCount = 1;
-    to_color_barrier.subresourceRange.layerCount = 1;
+    // COnvert to color attachment optimal 
+    VkImageMemoryBarrier barrier_to_render = {0};
+    barrier_to_render.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    barrier_to_render.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    barrier_to_render.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    barrier_to_render.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    barrier_to_render.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    barrier_to_render.image = context->swapchain.images[image_index];
+    barrier_to_render.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    barrier_to_render.subresourceRange.layerCount = 1;
+    barrier_to_render.subresourceRange.levelCount = 1;
+    barrier_to_render.srcAccessMask = VK_ACCESS_NONE;
+    barrier_to_render.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 
-    VkDependencyInfo dep_to_color_info = {0};
-    dep_to_color_info.sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO;
-    dep_to_color_info.imageMemoryBarrierCount = 1;
-    dep_to_color_info.pImageMemoryBarriers = &to_color_barrier;
-
-    vkCmdPipelineBarrier2(context->command_pool.buffers[frame_index], &dep_to_color_info);
-    */
+    vkCmdPipelineBarrier(context->command_pool.buffers[frame_index], VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, 
+                         0, 0, NULL, 0, NULL, 1, &barrier_to_render);
 
     vkCmdBeginRendering(context->command_pool.buffers[frame_index], &render_info);
 
@@ -132,27 +126,22 @@ BLV_Result blvCommandBufferRecord(blvContext *context, uint32_t frame_index, uin
 
     vkCmdEndRendering(context->command_pool.buffers[frame_index]);
 
-    /*
-    VkImageMemoryBarrier2 to_present_barrier = {0};
-    to_present_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2;
-    to_present_barrier.srcStageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
-    to_present_barrier.srcAccessMask = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT;
-    to_present_barrier.dstStageMask = VK_PIPELINE_STAGE_2_NONE;
-    to_present_barrier.dstAccessMask = 0;
-    to_present_barrier.oldLayout = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL_KHR;
-    to_present_barrier.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-    to_present_barrier.image = context->swapchain.images[image_index];
-    to_present_barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    to_present_barrier.subresourceRange.levelCount = 1;
-    to_present_barrier.subresourceRange.layerCount = 1;
+    VkImageMemoryBarrier barrier_to_present = {0};
+    barrier_to_present.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    barrier_to_present.oldLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    barrier_to_present.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+    barrier_to_present.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    barrier_to_present.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    barrier_to_present.image = context->swapchain.images[image_index];
+    barrier_to_present.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    barrier_to_present.subresourceRange.levelCount = 1;
+    barrier_to_present.subresourceRange.layerCount = 1;
+    barrier_to_present.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+    barrier_to_present.dstAccessMask = VK_ACCESS_NONE;
+ 
+    vkCmdPipelineBarrier(context->command_pool.buffers[frame_index], VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 
+                         0, 0, NULL, 0, NULL, 1, &barrier_to_present);
 
-    VkDependencyInfo dep_to_present_info = {0};
-    dep_to_color_info.sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO;
-    dep_to_color_info.imageMemoryBarrierCount = 1;
-    dep_to_color_info.pImageMemoryBarriers = &to_present_barrier;
-
-    vkCmdPipelineBarrier2(context->command_pool.buffers[frame_index], &dep_to_present_info);
-    */
 
     if (vkEndCommandBuffer(context->command_pool.buffers[frame_index]) != VK_SUCCESS) {
         BLV_SET_ERROR(BLV_VULKAN_COMMAND_BUFFER_ERROR, "Failed to end the recording of the command buffer");

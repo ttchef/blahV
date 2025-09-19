@@ -1,6 +1,8 @@
 
 CC = gcc # clang
 CFLAGS = -Wall -Wextra -Wconversion -g -Iinclude -Ivendor -fvisibility=hidden
+#CFLAGS = -fsanitize=address -fsanitize=undefined -g -O0 -Wall -Wextra -Iinclude -Ivendor -fvisibility=hidden
+
 LDFLAGS = -lglfw -lm -lvulkan 
 
 SRC = $(wildcard src/*.c) 

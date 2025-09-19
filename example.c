@@ -1,13 +1,12 @@
 
 #include <stdio.h>
 #include <blahV/blahV.h>
-#include <vulkan/vulkan_core.h>
 
 int main() {
     
     blvContext blv_context = {0};
     blvErrorSetLogLevel(BLV_LOG_DEBUG);
-    blvErrorEnableValidationLayers(false);
+    blvErrorEnableValidationLayers(true);
 
     // Default Conifg
     blvConfig blv_config = {0};
@@ -37,11 +36,14 @@ int main() {
 
     blvCamera camera = blvCameraInit(&camera_create_info);
 
-    blvImage image;
-    blvImageInit(&blv_context, &image, 512, 512, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT);
+    //int32_t width, height, channels;
+    //uint8_t* data = blvImageLoadStb("/home/ttchef/Downloads/ski-background.jpg", &width, &height, &channels, 4);
+    //blvImage image;
+    //blvImageInit(&blv_context, &image, 512, 512, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT);
+    ////blvMemoryUploadDataToImage(&blv_context, &image, data, width * height, width, height, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
 
     double current_time = blvWindowGetTime();
-    double last_time = 0.0;
+    double last_time = current_time;
 
     while (!blvWindowShouldQuit(&blv_context)) {
         current_time = blvWindowGetTime();

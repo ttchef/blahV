@@ -76,7 +76,7 @@ BLV_Result blvWindowInit(blvContext* context, blvWindowCreateInfo* createInfo) {
 }
 
 bool blvWindowShouldQuit(blvContext* context) {
-    return context->window.should_quit ? true : false;
+    return glfwWindowShouldClose(context->window.glfw_window);
 }
 
 void blvWindowPollEvents() {

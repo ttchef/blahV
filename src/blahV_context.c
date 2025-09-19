@@ -65,6 +65,7 @@ BLVAPI void blvDeinit(blvContext *context) {
     blvRendererDeinit(context);
     blvCommandPoolDeinit(context);
     blvPipelineDeinit(context);
+    blvRectangleDeinit(context);
     blvSwapchainDeinit(context);
     blvSurfaceDeinit(context);
     blvDeviceDeinit(context);
