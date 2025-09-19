@@ -29,7 +29,7 @@ BLV_Result blvVulkanInit(blvContext *context) {
 
     if (blvRectangleInit(context) != BLV_OK) return BLV_ERROR;
 
-    BLV_LOG(BLV_LOG_DEBUG, "Created Rectangle Buffers");
+    BLV_LOG(BLV_LOG_DEBUG, "Created Rectangle Buffers\n");
 
     if (blvPipelineInit(context, blv_rectangle_binding_description, blv_rectangle_attribute_description) != BLV_OK) return BLV_ERROR;
 
@@ -41,7 +41,7 @@ BLV_Result blvVulkanInit(blvContext *context) {
 
     if (blvRendererInit(context) != BLV_OK) return BLV_ERROR;
 
-    BLV_LOG(BLV_LOG_DEBUG, "Renderer Init");
+    BLV_LOG(BLV_LOG_DEBUG, "Renderer Init\n");
 
     return BLV_OK;
 }
