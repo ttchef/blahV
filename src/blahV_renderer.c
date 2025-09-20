@@ -110,8 +110,10 @@ BLV_Result blvRendererDrawFrame(blvContext *context) {
 
     // getting next image from swapchain
     uint32_t image_index;
-    vkAcquireNextImageKHR(context->device.logical_device, context->swapchain.swapchain, UINT64_MAX,
-                          context->renderer.image_available[context->renderer.frame_index], VK_NULL_HANDLE, &image_index);
+    if (vkAcquireNextImageKHR(context->device.logical_device, context->swapchain.swapchain, UINT64_MAX,
+                          context->renderer.image_available[context->renderer.frame_index], VK_NULL_HANDLE, &image_index) != VK_SUCCESS) {
+        BLV_SET_ERROR(BLV_VULKAN_SWAPCHAIN_ERROR, "Failed to acquire next swapchain image");
+    }
 
     // Check Image Index
     if (context->renderer.images_in_flight[image_index] != VK_NULL_HANDLE) {
@@ -145,8 +147,6 @@ BLV_Result blvRendererDrawFrame(blvContext *context) {
     submit_info.pCommandBuffers = &context->command_pool.buffers[context->renderer.frame_index];
     submit_info.signalSemaphoreCount = 1;
     submit_info.pSignalSemaphores = signal_semaphore;
-    
-    context->renderer.images_in_flight[image_index] = VK_NULL_HANDLE;
 
     if (vkQueueSubmit(context->graphics_queue.queue, 1, &submit_info, context->renderer.in_flight_fence[context->renderer.frame_index]) != VK_SUCCESS) {
         BLV_SET_ERROR(BLV_VULKAN_QUEUE_SUBMIT_ERROR, "Failed to submit graphics_queue");
@@ -162,9 +162,11 @@ BLV_Result blvRendererDrawFrame(blvContext *context) {
     present_info.pImageIndices = &image_index;
 
     if (vkQueuePresentKHR(context->graphics_queue.queue, &present_info) != VK_SUCCESS) {
-        BLV_SET_ERROR(BLV_ERROR, "Failed to present queus");
+        BLV_SET_ERROR(BLV_ERROR, "Failed to present queue");
         return BLV_ERROR;
     }
+
+    context->renderer.images_in_flight[image_index] = VK_NULL_HANDLE;
 
     context->renderer.frame_index = (context->renderer.frame_index + 1) % context->config.frames_in_flight;
 

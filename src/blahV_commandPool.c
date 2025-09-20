@@ -92,10 +92,10 @@ BLV_Result blvCommandBufferRecord(blvContext *context, uint32_t frame_index, uin
     barrier_to_render.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
     barrier_to_render.subresourceRange.layerCount = 1;
     barrier_to_render.subresourceRange.levelCount = 1;
-    barrier_to_render.srcAccessMask = VK_ACCESS_NONE;
+    barrier_to_render.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
     barrier_to_render.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 
-    vkCmdPipelineBarrier(context->command_pool.buffers[frame_index], VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, 
+    vkCmdPipelineBarrier(context->command_pool.buffers[frame_index], VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, 
                          0, 0, NULL, 0, NULL, 1, &barrier_to_render);
 
     vkCmdBeginRendering(context->command_pool.buffers[frame_index], &render_info);

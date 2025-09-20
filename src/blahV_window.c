@@ -54,6 +54,7 @@ BLV_Result blvWindowInit(blvContext* context, blvWindowCreateInfo* createInfo) {
         context->window.name = createInfo->name;
     }
     
+    glfwWindowHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
     context->window.glfw_window = glfwCreateWindow(context->window.width, context->window.height, context->window.name, NULL, NULL);
     if (!context->window.glfw_window) {
         BLV_SET_ERROR(BLV_GLFW_ERROR, "Failed to create a glfw window!");
