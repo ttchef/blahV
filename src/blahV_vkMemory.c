@@ -8,7 +8,7 @@
 #include <vulkan/vulkan_core.h>
 
 // Staging Buffer
-BLV_Result blvMemoryUploadDataToBuffer(blvContext *context, blvBuffer *buffer, void *data, uint32_t data_count) {
+BLV_Result blvMemoryUploadDataToBuffer(blvContext *context, blvBuffer *buffer, void *data, uint32_t data_size) {
 
     blvQueue* queue = &context->graphics_queue;
     VkCommandPool command_pool;
@@ -16,7 +16,7 @@ BLV_Result blvMemoryUploadDataToBuffer(blvContext *context, blvBuffer *buffer, v
     blvBuffer staging_buffer;
 
     // TODO: fix size thing
-    VkDeviceSize buffer_size = sizeof(((uint32_t*)data)[0]) * data_count;
+    VkDeviceSize buffer_size = data_size;
     if (blvBufferInit(context, buffer_size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
                       VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &staging_buffer) != BLV_OK) {
         BLV_SET_ERROR(BLV_VULKAN_BUFFER_ERROR, "Failed to create staging buffer");
@@ -102,10 +102,10 @@ BLV_Result blvMemoryUploadDataToBuffer(blvContext *context, blvBuffer *buffer, v
 }
 
 // Host Visiable
-BLV_Result blvMemoryUploadDataToBufferHostVisible(blvContext *context, blvBuffer *buffer, void *data, uint32_t data_count) {
+BLV_Result blvMemoryUploadDataToBufferHostVisible(blvContext *context, blvBuffer *buffer, void *data, uint32_t data_size) {
 
     // TODO: fix size thing
-    VkDeviceSize buffer_size = sizeof(((uint32_t*)data)[0]) * data_count;
+    VkDeviceSize buffer_size = data_size;
     void* mapped;
     if (vkMapMemory(context->device.logical_device, buffer->memory, 0, buffer_size, 0, &mapped) != VK_SUCCESS) {
         BLV_SET_ERROR(BLV_VULKAN_MEMORY_ERROR, "Failed to map buffer memory");
@@ -117,7 +117,7 @@ BLV_Result blvMemoryUploadDataToBufferHostVisible(blvContext *context, blvBuffer
     return BLV_OK;
 }
 
-BLV_Result blvMemoryUploadDataToImage(blvContext *context, blvImage *image, void *data, uint32_t data_count, uint32_t width, uint32_t height,
+BLV_Result blvMemoryUploadDataToImage(blvContext *context, blvImage *image, void *data, uint32_t data_size, uint32_t width, uint32_t height,
                                       VkImageLayout final_layout, VkAccessFlags dst_access_mask) {
     blvQueue* queue = &context->graphics_queue;
     VkCommandPool command_pool;
@@ -125,7 +125,7 @@ BLV_Result blvMemoryUploadDataToImage(blvContext *context, blvImage *image, void
     blvBuffer staging_buffer;
 
     // TODO: fix size thing
-    VkDeviceSize buffer_size = sizeof(((uint32_t*)data)[0]) * data_count;
+    VkDeviceSize buffer_size = data_size;
     if (blvBufferInit(context, buffer_size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
                       VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &staging_buffer) != BLV_OK) {
         BLV_SET_ERROR(BLV_VULKAN_BUFFER_ERROR, "Failed to create staging buffer");
@@ -222,7 +222,7 @@ BLV_Result blvMemoryUploadDataToImage(blvContext *context, blvImage *image, void
     
     // Submit
     VkSubmitInfo submit_info = {0};
-    submit_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_SUBMIT_INFO;
+    submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
     submit_info.commandBufferCount = 1;
     submit_info.pCommandBuffers = &command_buffer;
     

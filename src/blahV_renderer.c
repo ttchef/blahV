@@ -41,7 +41,7 @@ BLV_Result blvRendererInit(blvContext* context) {
     }
 
     // Frames in flight
-    for (int32_t i = 0; i < context->config.frames_in_flight; i++) {
+    for (int32_t i = 0; i < (int32_t)context->config.frames_in_flight; i++) {
         if (vkCreateSemaphore(context->device.logical_device, &sempahore_info, NULL, &context->renderer.image_available[i]) != VK_SUCCESS) {
             BLV_SET_ERROR(BLV_ERROR, "Failed to create image_available semaphore");
             return BLV_ERROR;
@@ -65,13 +65,13 @@ BLV_Result blvRendererInit(blvContext* context) {
         return BLV_ERROR;
     }
 
-    for (int32_t i = 0; i < context->swapchain.image_count; i++) {
+    for (int32_t i = 0; i < (int32_t)context->swapchain.image_count; i++) {
         context->renderer.images_in_flight[i] = VK_NULL_HANDLE;
     }
 
     // Draw Calls
     context->renderer.draw_calls_capacity = 10;
-    context->renderer.draw_calls = malloc(sizeof(void*) * context->renderer.draw_calls_capacity); 
+    context->renderer.draw_calls = malloc(sizeof(void*) * (size_t)context->renderer.draw_calls_capacity); 
     if (!context->renderer.draw_calls) {
         BLV_SET_ERROR(BLV_ALLOC_FAIL, "Failed to allocate renderer draw calls array");
         return BLV_ERROR;
@@ -90,7 +90,7 @@ BLV_Result blvRendererPushDrawCall(blvContext *context, void *data) {
 
     if (context->renderer.draw_calls_index >= context->renderer.draw_calls_capacity) {
         context->renderer.draw_calls_capacity *= 2;
-        context->renderer.draw_calls = realloc(context->renderer.draw_calls, sizeof(void*) * context->renderer.draw_calls_capacity);
+        context->renderer.draw_calls = realloc(context->renderer.draw_calls, sizeof(void*) * (size_t)context->renderer.draw_calls_capacity);
         if (!context->renderer.draw_calls) {
             BLV_SET_ERROR(BLV_ALLOC_FAIL, "Failed to reallocate renderer draw calls array");
             return BLV_ERROR;
@@ -113,6 +113,10 @@ BLV_Result blvRendererDrawFrame(blvContext *context) {
     if (vkAcquireNextImageKHR(context->device.logical_device, context->swapchain.swapchain, UINT64_MAX,
                           context->renderer.image_available[context->renderer.frame_index], VK_NULL_HANDLE, &image_index) != VK_SUCCESS) {
         BLV_SET_ERROR(BLV_VULKAN_SWAPCHAIN_ERROR, "Failed to acquire next swapchain image");
+    }
+
+    if (image_index >= context->swapchain.image_count) {
+        BLV_SET_ERROR(BLV_VULKAN_SWAPCHAIN_ERROR, "Invalid Image Index");
     }
 
     // Check Image Index
@@ -167,7 +171,6 @@ BLV_Result blvRendererDrawFrame(blvContext *context) {
     }
 
     context->renderer.images_in_flight[image_index] = VK_NULL_HANDLE;
-
     context->renderer.frame_index = (context->renderer.frame_index + 1) % context->config.frames_in_flight;
 
     return BLV_OK;
@@ -201,7 +204,7 @@ void blvRendererDeinit(blvContext *context) {
     free(context->renderer.draw_calls);
     context->renderer.draw_calls = NULL;
 
-    for (int32_t i = 0; i < context->config.frames_in_flight; i++) {
+    for (int32_t i = 0; i < (int32_t)context->config.frames_in_flight; i++) {
         vkDestroySemaphore(context->device.logical_device, context->renderer.image_available[i], NULL);
         vkDestroySemaphore(context->device.logical_device, context->renderer.render_finished[i], NULL);
         vkDestroyFence(context->device.logical_device, context->renderer.in_flight_fence[i], NULL);

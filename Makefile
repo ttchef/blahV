@@ -1,7 +1,7 @@
 
 CC = gcc # clang
 CFLAGS = -Wall -Wextra -Wconversion -g -Iinclude -Ivendor -fvisibility=hidden
-#CFLAGS = -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer -g -O0 -Wall -Wextra -Iinclude -Ivendor -fvisibility=hidden
+#CFLAGS = -fsanitize=thread -fsanitize=undefined -fno-omit-frame-pointer -g -O0 -Wall -Wextra -Iinclude -Ivendor -fvisibility=hidden
 
 LDFLAGS = -lglfw -lm -lvulkan 
 

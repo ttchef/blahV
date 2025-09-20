@@ -91,13 +91,12 @@ BLV_Result blvDeviceInstanceInit(blvContext *context) {
     // Get Layers
     uint32_t layer_count = 0;
     vkEnumerateInstanceLayerProperties(&layer_count, NULL);
-    VkLayerProperties layer_properties[layer_count];
-    vkEnumerateInstanceLayerProperties(&layer_count, layer_properties);
-
     if (layer_count == 0) {
         BLV_SET_ERROR(BLV_VULKAN_INSTANCE_ERROR, "Layer Count is 0");
         return BLV_ERROR;
     }
+    VkLayerProperties layer_properties[layer_count];
+    vkEnumerateInstanceLayerProperties(&layer_count, layer_properties);
 
     // Layers we want
     const char* wanted_layers[] = {
@@ -321,11 +320,15 @@ void blvDeviceDeinit(blvContext* context) {
 bool blvDevicePhysicalDeviceIsExtensionSupported(blvContext* context, const char *name) {
     uint32_t num_extensions = 0;
     vkEnumerateDeviceExtensionProperties(context->device.physical_device, NULL, &num_extensions, NULL);
+    // TODO: idk it error tho
+    if (num_extensions == 0) {
+        BLV_SET_ERROR(BLV_VULKAN_PHYSICAL_DEVICE_ERROR, "Found 0 extensions");
+    }
     VkExtensionProperties extensions[num_extensions];
     vkEnumerateDeviceExtensionProperties(context->device.physical_device, NULL, &num_extensions, extensions);
 
     for (uint32_t i = 0; i < num_extensions; i++) {
-        if (strcmp(name, extensions[i].extensionName)) return true;
+        if (strcmp(name, extensions[i].extensionName) == 0) return true;
     }
 
     return false;

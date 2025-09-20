@@ -53,7 +53,7 @@ blvCamera blvCameraInit(blvCameraCreateInfo *create_info) {
     else camera.proj_type = create_info->proj_type;
 
     camera.up = blvV3(0.0f, -1.0f, 0.0f);
-    camera.position = blvV3(0.0f, 0.0f, -2.0f);
+    camera.position = blvV3(0.0f, 0.0f, 3.0f);
     camera.direction = blvV3(0.0f, 0.0f, 1.0f);
 
 
@@ -166,4 +166,3 @@ BLV_Result blvCameraSendMatrices(blvContext *context, blvCamera *camera) {
     return BLV_OK;
 
 }
-

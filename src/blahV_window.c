@@ -12,8 +12,8 @@
 // Default Window Resize Callback 
 void blvWindowResizeCallbackDefault(GLFWwindow* window, int width, int height) {
     blvContext* context = (blvContext*)glfwGetWindowUserPointer(window);
-    context->window.width = width;
-    context->window.height = height;
+    context->window.width = (uint32_t)width;
+    context->window.height = (uint32_t)height;
     blvSwapchainRecreate(context);
 }
 
@@ -54,8 +54,7 @@ BLV_Result blvWindowInit(blvContext* context, blvWindowCreateInfo* createInfo) {
         context->window.name = createInfo->name;
     }
     
-    glfwWindowHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
-    context->window.glfw_window = glfwCreateWindow(context->window.width, context->window.height, context->window.name, NULL, NULL);
+    context->window.glfw_window = glfwCreateWindow((int32_t)context->window.width, (int32_t)context->window.height, context->window.name, NULL, NULL);
     if (!context->window.glfw_window) {
         BLV_SET_ERROR(BLV_GLFW_ERROR, "Failed to create a glfw window!");
         return BLV_ERROR;

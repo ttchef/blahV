@@ -41,8 +41,8 @@ blvBuffer blv_rectangle_indices_buffer;
 
 BLV_Result blvRectangleInit(blvContext *context) {
     
-    blvBufferVertexCreate(context, &blv_rectangle_vertex_buffer, (void*)blv_rectangle_vertices, BLV_ARRAY_COUNT(blv_rectangle_vertices));
-    blvBufferIndexCreate(context, &blv_rectangle_indices_buffer, (void*)blv_rectangle_indices, BLV_ARRAY_COUNT(blv_rectangle_indices));
+    blvBufferVertexCreate(context, &blv_rectangle_vertex_buffer, (void*)blv_rectangle_vertices, sizeof(blv_rectangle_vertices));
+    blvBufferIndexCreate(context, &blv_rectangle_indices_buffer, (void*)blv_rectangle_indices, sizeof(blv_rectangle_indices));
 
     return BLV_OK;
 }
