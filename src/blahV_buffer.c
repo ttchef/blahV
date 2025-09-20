@@ -38,9 +38,8 @@ BLV_Result blvBufferInit(blvContext *context, VkDeviceSize size, VkBufferUsageFl
 
 BLV_Result blvBufferVertexCreate(blvContext *context, blvBuffer* buffer, void* vertices, uint32_t vertices_size) {
 
-    blvBufferInit(context, vertices_size, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-                  VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, buffer);
-    blvMemoryUploadDataToBufferHostVisible(context, buffer, vertices, vertices_size);
+    blvBufferInit(context, vertices_size, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, buffer);
+    blvMemoryUploadDataToBuffer(context, buffer, vertices, vertices_size);
 
     return BLV_OK;
 }
@@ -48,9 +47,8 @@ BLV_Result blvBufferVertexCreate(blvContext *context, blvBuffer* buffer, void* v
 BLV_Result blvBufferIndexCreate(blvContext *context, blvBuffer *buffer, void *indices, uint32_t indices_size) {
 
     // TODO fix size thing
-    blvBufferInit(context, indices_size, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-                  VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, buffer);
-    blvMemoryUploadDataToBufferHostVisible(context, buffer, indices, indices_size);
+    blvBufferInit(context, indices_size, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, buffer);
+    blvMemoryUploadDataToBuffer(context, buffer, indices, indices_size);
 
     return BLV_OK;
 }
