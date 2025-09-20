@@ -34,7 +34,7 @@ VkDebugUtilsMessengerEXT blvRegisterDebugCallback(VkInstance instance) {
         return 0;
     }
 
-    VkDebugUtilsMessengerEXT callback;
+    VkDebugUtilsMessengerEXT callback = {0};
 
     VkDebugUtilsMessengerCreateInfoEXT callback_info = {0};
     callback_info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
@@ -93,6 +93,11 @@ BLV_Result blvDeviceInstanceInit(blvContext *context) {
     vkEnumerateInstanceLayerProperties(&layer_count, NULL);
     VkLayerProperties layer_properties[layer_count];
     vkEnumerateInstanceLayerProperties(&layer_count, layer_properties);
+
+    if (layer_count == 0) {
+        BLV_SET_ERROR(BLV_VULKAN_INSTANCE_ERROR, "Layer Count is 0");
+        return BLV_ERROR;
+    }
 
     // Layers we want
     const char* wanted_layers[] = {
@@ -320,7 +325,7 @@ bool blvDevicePhysicalDeviceIsExtensionSupported(blvContext* context, const char
     vkEnumerateDeviceExtensionProperties(context->device.physical_device, NULL, &num_extensions, extensions);
 
     for (uint32_t i = 0; i < num_extensions; i++) {
-        if (name == extensions[i].extensionName) return true;
+        if (strcmp(name, extensions[i].extensionName)) return true;
     }
 
     return false;
