@@ -8,6 +8,7 @@
 #include "blahV/renderer/blahV_renderer.h"
 #include "blahV/vulkan/blahV_surface.h"
 #include "blahV/vulkan/blahV_swapchain.h"
+#include "blahV/vulkan/blahV_texture_manager.h"
 #include "blahV/vulkan/blahV_window.h"
 #include "blahV/renderer/blahV_rectangle.h"
 #include "blahV/core/blahV_utils.h"
@@ -41,7 +42,11 @@ BLV_Result blvVulkanInit(blvContext *context) {
 
     if (blvRendererInit(context) != BLV_OK) return BLV_ERROR;
 
-    BLV_LOG(BLV_LOG_DEBUG, "Renderer Init\n");
+    BLV_LOG(BLV_LOG_DEBUG, "Created Renderer\n");
+
+    if (blvTextureManagerInit(context) != BLV_OK) return BLV_ERROR;
+
+    BLV_LOG(BLV_LOG_DEBUG, "Created Texture Manager!\n");
 
     return BLV_OK;
 }
@@ -62,6 +67,7 @@ BLVAPI void blvDeinit(blvContext *context) {
     
     vkDeviceWaitIdle(context->device.logical_device);
     
+    blvTextureManagerDeinit(context);
     blvRendererDeinit(context);
     blvCommandPoolDeinit(context);
     blvPipelineDeinit(context);
