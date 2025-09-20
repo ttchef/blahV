@@ -49,6 +49,7 @@ const char* blvErrorString(BLV_Result result) {
         case BLV_INVALID_FUNCTION_INPUT:            return "Invalid Function Input";
         case BLV_VULKAN_IMAGE_ERROR:                return "Vulkan Image Error";
         case BLV_IMAGE_ERROR:                       return "Image Error";
+        case BLV_VULKAN_SAMPLER_ERROR:              return "Vulkan Sampler Error";
         default:                                    return "Unkown Error";
     }
 }

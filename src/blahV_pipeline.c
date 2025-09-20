@@ -50,16 +50,16 @@ VkShaderModule* blvShaderInit(blvContext *context, blvShaderCreateInfo *create_i
 }
 
 BLV_Result blvPipelineInit(blvContext *context, VkVertexInputBindingDescription binding_description,
-                           VkVertexInputAttributeDescription attribute_description) {
+                           VkVertexInputAttributeDescription* attribute_description) {
 
     blvShaderCreateInfo vertex_shader_info = {0};
     vertex_shader_info.shader_type = BLV_SHADER_TYPE_VERTEX;
-    vertex_shader_info.filepath = "shaders/spv/default_vert.spv";
+    vertex_shader_info.filepath = "shaders/spv/texture_vert.spv";
     VkShaderModule* vertex_module = blvShaderInit(context, &vertex_shader_info);
 
     blvShaderCreateInfo fragment_shader_info = {0};
     fragment_shader_info.shader_type = BLV_SHADER_TYPE_FRAGMENT;
-    fragment_shader_info.filepath = "shaders/spv/default_frag.spv";
+    fragment_shader_info.filepath = "shaders/spv/texture_frag.spv";
     VkShaderModule* fragment_module = blvShaderInit(context, &fragment_shader_info);
 
     VkPipelineShaderStageCreateInfo shader_stages[2];
@@ -75,12 +75,13 @@ BLV_Result blvPipelineInit(blvContext *context, VkVertexInputBindingDescription 
     shader_stages[1].module = context->graphcis_pipeline.fragment_shader;
     shader_stages[1].pName = "main";
 
+    // TODO: make that more modular
     VkPipelineVertexInputStateCreateInfo vertex_input_state = {0};
     vertex_input_state.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
     vertex_input_state.vertexBindingDescriptionCount = 1;
     vertex_input_state.pVertexBindingDescriptions = &binding_description;
-    vertex_input_state.vertexAttributeDescriptionCount = 1;
-    vertex_input_state.pVertexAttributeDescriptions = &attribute_description;
+    vertex_input_state.vertexAttributeDescriptionCount = 2;
+    vertex_input_state.pVertexAttributeDescriptions = attribute_description;
 
     VkPipelineInputAssemblyStateCreateInfo assembly_input_state = {0};
     assembly_input_state.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;

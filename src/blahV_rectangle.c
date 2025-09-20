@@ -13,10 +13,11 @@
 #include <vulkan/vulkan_core.h>
 
 float blv_rectangle_vertices[] = {
-    0.5f, 0.5f, 0.0f, 
-    -0.5f, 0.5f, 0.0f,
-    0.5f, -0.5f, 0.0f,
-    -0.5f, -0.5f, 0.0f,
+        // Pos              // UV
+    0.5f, 0.5f, 0.0f,       1.0f, 1.0f,
+    -0.5f, 0.5f, 0.0f,      0.0f, 1.0f,
+    0.5f, -0.5f, 0.0f,      1.0f, 0.0f,
+    -0.5f, -0.5f, 0.0f,     0.0f, 0.0f,
 };
 
 uint32_t blv_rectangle_indices[] = {
@@ -26,14 +27,23 @@ uint32_t blv_rectangle_indices[] = {
 
 VkVertexInputBindingDescription blv_rectangle_binding_description = {
     .binding = 0,
-    .stride = sizeof(float) * 3,
+    .stride = sizeof(float) * 5,
     .inputRate = VK_VERTEX_INPUT_RATE_VERTEX,
 };
 
-VkVertexInputAttributeDescription blv_rectangle_attribute_description = {
-    .binding = 0,
-    .location = 0,
-    .format = VK_FORMAT_R32G32B32_SFLOAT,
+VkVertexInputAttributeDescription blv_rectangle_attribute_description[2] = {
+    {
+        .binding = 0,
+        .location = 0,
+        .format = VK_FORMAT_R32G32B32_SFLOAT,
+        .offset = 0,
+    },
+    {
+        .binding = 0,
+        .location = 1, 
+        .format = VK_FORMAT_R32G32_SFLOAT,
+        .offset = sizeof(float) * 3,
+    },
 };
 
 blvBuffer blv_rectangle_vertex_buffer;

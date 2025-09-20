@@ -39,7 +39,7 @@ typedef struct {
 VkShaderModule* blvShaderInit(blvContext* context, blvShaderCreateInfo* create_info);
 
 BLV_Result blvPipelineInit(blvContext* context, VkVertexInputBindingDescription binding_description,
-                           VkVertexInputAttributeDescription attribute_description);
+                           VkVertexInputAttributeDescription* attribute_description);
 void blvPipelineDeinit(blvContext* context);
 
 

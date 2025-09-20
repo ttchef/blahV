@@ -13,7 +13,11 @@
 #include "blahV_log.h"
 #include "blahV_config.h"
 #include "blahV_globals.h"
+#include "blahV/vulkan/blahV_sampler.h"
+
+// TODO: temporär
 #include "blahV/vulkan/blahV_image.h"
+#include "blahV/vulkan/blahV_vkMemory.h"
 
 struct blvContext {
     blvWindow window;
@@ -25,6 +29,7 @@ struct blvContext {
     blvPipeline graphcis_pipeline;
     blvCommandPool command_pool;
     blvRenderer renderer;
+    blvSampler sampler_default;
 };
 
 BLVAPI BLV_Result blvVulkanInit(blvContext* context);

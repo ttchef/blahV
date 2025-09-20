@@ -23,7 +23,7 @@ typedef struct {
 extern float blv_rectangle_vertices[];
 extern uint32_t blv_rectangle_indices[];
 extern VkVertexInputBindingDescription blv_rectangle_binding_description;
-extern VkVertexInputAttributeDescription blv_rectangle_attribute_description;
+extern VkVertexInputAttributeDescription blv_rectangle_attribute_description[];
 
 extern blvBuffer blv_rectangle_vertex_buffer;
 extern blvBuffer blv_rectangle_indices_buffer;

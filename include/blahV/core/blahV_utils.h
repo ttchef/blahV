@@ -10,8 +10,8 @@
 #include <vulkan/vulkan_core.h>
 
 #define BLV_ARRAY_COUNT(a) (sizeof((a)) / sizeof((a)[0]))
-#define BLV_NOT_ZERO(val) ((val) != 0 ? true : false)
-#define BLV_IS_ZERO(val) ((val) == 0 ? true : false)
+#define BLV_NOT_ZERO(val) (((val) != 0) ? true : false)
+#define BLV_IS_ZERO(val) (((val)) == 0 ? true : false)
 
 
 #define BLV_CHECK(val) \

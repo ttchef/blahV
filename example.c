@@ -36,11 +36,11 @@ int main() {
 
     blvCamera camera = blvCameraInit(&camera_create_info);
 
-    //int32_t width, height, channels;
-    //uint8_t* data = blvImageLoadStb("/home/ttchef/Downloads/ski-background.jpg", &width, &height, &channels, 4);
-    //blvImage image;
-    //blvImageInit(&blv_context, &image, 512, 512, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT);
-    //blvMemoryUploadDataToImage(&blv_context, &image, data, width * height, width, height, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+    int32_t width, height, channels;
+    uint8_t* data = blvImageLoadStb("/home/ttchef/Downloads/ski-background.jpg", &width, &height, &channels, 4);
+    blvImage image;
+    blvImageInit(&blv_context, &image, width, height, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT);
+    blvMemoryUploadDataToImage(&blv_context, &image, data, width * height * 4, width, height, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
 
 
     double current_time = blvWindowGetTime();

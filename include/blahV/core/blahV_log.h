@@ -38,6 +38,7 @@ typedef enum {
     BLV_INVALID_FUNCTION_INPUT = -23,
     BLV_VULKAN_IMAGE_ERROR = -24,
     BLV_IMAGE_ERROR = -25,
+    BLV_VULKAN_SAMPLER_ERROR = -26,
 } BLV_Result;
 
 typedef enum {
