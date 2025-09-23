@@ -3,17 +3,19 @@
 #include "blahV/core/blahV_context.h"
 #include "blahV/core/blahV_log.h"
 #include "blahV/core/blahV_utils.h"
+#include <stdint.h>
 #include <stdlib.h>
 #include <vulkan/vulkan_core.h>
 
-#define BLV_TEXTURE_MANAGER_MAX_DESCRIPTOR_SETS 1000
-
 BLV_Result blvTextureManagerInit(blvContext *context) {
 
+    // Init texture index 
+    context->texture_manager.current_texture_index = 0;
+        
     VkDescriptorPoolSize pool_sizes[] = {
         (VkDescriptorPoolSize){
             .type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-            .descriptorCount = 1, // TODO: for pbr textures
+            .descriptorCount = BLV_TEXTURE_MANAGER_MAX_DESCRIPTOR_SETS, // TODO: for pbr textures
         }
     };
 
@@ -32,7 +34,7 @@ BLV_Result blvTextureManagerInit(blvContext *context) {
         (VkDescriptorSetLayoutBinding){
             .binding = 0,
             .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-            .descriptorCount = BLV_TEXTURE_MANAGER_MAX_DESCRIPTOR_SETS,
+            .descriptorCount = 1,
             .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT,
             .pImmutableSamplers = 0,
         }
@@ -65,23 +67,23 @@ BLV_Result blvTextureManagerInit(blvContext *context) {
             BLV_SET_ERROR(BLV_VULKAN_DESCRIPTOR_SET_ERROR, "Failed to allocate vulkan descriptor sets for texture manager");
             return BLV_ERROR;
         }
-
-        VkWriteDescriptorSet descriptor_write = {0};
-        descriptor_write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descriptor_write.dstSet = context->texture_manager.desccriptor_sets[i];
-        descriptor_write.descriptorCount = 1;
-        descriptor_write.dstBinding = 0;
-        descriptor_write.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        descriptor_write.pImageInfo = 
-
-        vkUpdateDescriptorSets(context->device.logical_device, 1, &descriptor_write, 0, NULL);
     }
 
     return BLV_OK;
 }
 
 void blvTextureManagerDeinit(blvContext *context) {
-
+    vkDestroyDescriptorPool(context->device.logical_device, context->texture_manager.descriptor_pool, NULL);
+    vkDestroyDescriptorSetLayout(context->device.logical_device, context->texture_manager.descriptor_layout, NULL);
 }
 
+int32_t blvTextureManagerAddTexture(blvContext *context) {
+    if (context->texture_manager.current_texture_index + 1 < BLV_TEXTURE_MANAGER_MAX_DESCRIPTOR_SETS) {
+        uint32_t tmp = context->texture_manager.current_texture_index;
+        context->texture_manager.current_texture_index++;
+        return tmp;
+    }
+    
+    return -1;
+}
 
