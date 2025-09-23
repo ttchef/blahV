@@ -7,5 +7,6 @@
 #include "vulkan/blahV_window.h"
 #include "renderer/blahV_rectangle.h"
 #include "renderer/blahV_camera.h"
+#include "renderer/blahV_texture.h"
 
 #endif

@@ -1,4 +1,5 @@
 
+#include "blahV/renderer/blahV_texture.h"
 #include <stdio.h>
 #include <blahV/blahV.h>
 
@@ -23,6 +24,7 @@ int main() {
         return -1;
     }
 
+    // Camera
     blvCameraCreateInfo camera_create_info = { 
         .speed = 5.0f,
         .sensitivity = 0.05f,
@@ -36,12 +38,9 @@ int main() {
 
     blvCamera camera = blvCameraInit(&camera_create_info);
 
-    int32_t width, height, channels;
-    uint8_t* data = blvImageLoadStb("/home/ttchef/Downloads/ski-background.jpg", &width, &height, &channels, 4);
-    blvImage image;
-    blvImageInit(&blv_context, &image, width, height, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT);
-    blvMemoryUploadDataToImage(&blv_context, &image, data, width * height * 4, width, height, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
-
+    // Texture
+    blvTexture2D texture;
+    blvTexture2DInit(&blv_context, &texture, "/home/ttchef/Downloads/forest.png", NULL);
 
     double current_time = blvWindowGetTime();
     double last_time = current_time;

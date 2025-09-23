@@ -6,6 +6,7 @@
 #include "blahV/core/blahV_log.h"
 #include "blahV/vulkan/blahV_pipeline.h"
 #include "blahV/renderer/blahV_renderer.h"
+#include "blahV/vulkan/blahV_sampler.h"
 #include "blahV/vulkan/blahV_surface.h"
 #include "blahV/vulkan/blahV_swapchain.h"
 #include "blahV/vulkan/blahV_texture_manager.h"
@@ -48,6 +49,10 @@ BLV_Result blvVulkanInit(blvContext *context) {
 
     BLV_LOG(BLV_LOG_DEBUG, "Created Texture Manager!\n");
 
+    context->sampler_default = blvSamplerInit(context, NULL);
+
+    BLV_LOG(BLV_LOG_DEBUG, "Created Default Sampler\n");
+
     return BLV_OK;
 }
 
@@ -67,6 +72,7 @@ BLVAPI void blvDeinit(blvContext *context) {
     
     vkDeviceWaitIdle(context->device.logical_device);
     
+    blvSamplerDeinit(context, &context->sampler_default);
     blvTextureManagerDeinit(context);
     blvRendererDeinit(context);
     blvCommandPoolDeinit(context);
