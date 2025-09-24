@@ -1,5 +1,6 @@
 
 #include "blahV/renderer/blahV_rectangle.h"
+#include "blahV/renderer/blahV_rectangle_texture.h"
 #include "blahV/vulkan/blahV_buffer.h"
 #include "blahV/core/blahV_context.h"
 #include "blahV/vulkan/blahV_device.h"
@@ -12,7 +13,7 @@
 #include <stdlib.h>
 #include <vulkan/vulkan_core.h>
 
-float blv_rectangle_vertices[] = {
+static float blv_rectangle_vertices[] = {
         // Pos              // UV
     0.5f, 0.5f, 0.0f,       1.0f, 1.0f,
     -0.5f, 0.5f, 0.0f,      0.0f, 1.0f,
@@ -20,7 +21,7 @@ float blv_rectangle_vertices[] = {
     -0.5f, -0.5f, 0.0f,     0.0f, 0.0f,
 };
 
-uint32_t blv_rectangle_indices[] = {
+static uint32_t blv_rectangle_indices[] = {
     0, 1, 2,
     1, 2, 3,
 };
@@ -46,8 +47,8 @@ VkVertexInputAttributeDescription blv_rectangle_attribute_description[2] = {
     },
 };
 
-blvBuffer blv_rectangle_vertex_buffer;
-blvBuffer blv_rectangle_indices_buffer;
+static blvBuffer blv_rectangle_vertex_buffer;
+static blvBuffer blv_rectangle_indices_buffer;
 
 BLV_Result blvRectangleInit(blvContext *context) {
     
@@ -62,6 +63,7 @@ void blvRectangleDraw(blvContext* context, float pos_x, float pos_y, float scale
     blvRectangle* rect = malloc(sizeof(blvRectangle));
     if (!rect) {
         BLV_SET_ERROR(BLV_ALLOC_FAIL, "Failed to allocate rectangle");
+        return;
     }
     rect->draw_type = BLV_DRAW_TYPE_RECTANGLE;
     rect->pos_x = pos_x;
@@ -71,7 +73,30 @@ void blvRectangleDraw(blvContext* context, float pos_x, float pos_y, float scale
     rect->color = color;
 
     blvRendererPushDrawCall(context, rect);
+}
 
+void blvRectangleTextureDraw(blvContext *context, float pos_x, float pos_y, float scale_x, float scale_y, blvVec4 color, blvTexture2D *texture) {
+    
+    blvRectangleTexture* rect = malloc(sizeof(blvRectangleTexture));
+    if (!rect) {
+        BLV_SET_ERROR(BLV_ALLOC_FAIL, "Failed to allocate textured rectangle");
+        return;
+    }
+
+    if (!texture) {
+        BLV_SET_ERROR(BLV_INVALID_FUNCTION_INPUT, "Texture Pointer is NULL");
+        return;
+    }
+
+    rect->draw_type = BLV_DRAW_TYPE_RECTANGLE_TEXTURE;
+    rect->pos_x = pos_x;
+    rect->pos_y = pos_y;
+    rect->scale_x = scale_x;
+    rect->scale_y = scale_y;
+    rect->color = color;
+    rect->texture = texture;
+
+    blvRendererPushDrawCall(context, rect);
 }
 
 void blvRectangleRender(blvContext *context, uint32_t index, blvRectangle* rect) {
@@ -104,6 +129,35 @@ void blvRectangleRender(blvContext *context, uint32_t index, blvRectangle* rect)
       //                      &context->graphcis_pipeline.descriptor_sets[index], 0, NULL);
 
     vkCmdDrawIndexed(context->command_pool.buffers[index], BLV_ARRAY_COUNT(blv_rectangle_indices), 1, 0, 0, 0);
+}
+
+void blvRectangleTextureRender(blvContext *context, uint32_t index, blvRectangleTexture *rect) {
+    
+    VkBuffer vertex_buffers[] = {blv_rectangle_vertex_buffer.buffer};
+    VkDeviceSize offsets[] = {0};
+
+    // Update Uniform Buffer 
+    blvMat4 model_matrix = blvMat4Translate(blvV3(rect->pos_x, rect->pos_y, 0.0f));
+    blvMat4 model_scale = blvMat4Scale(blvV3(rect->scale_x, rect->scale_y, 0.0f));
+    model_matrix = blvMat4Mul(model_matrix, model_scale);
+
+    blvVec4 color = rect->color;
+    blvModelColorPushConstant push_constant;
+    push_constant.model = model_matrix;
+    push_constant.color = color;
+
+    vkCmdPushConstants(context->command_pool.buffers[index], context->graphcis_pipeline.layout,
+                       VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(blvModelColorPushConstant), &push_constant);
+
+    vkCmdBindVertexBuffers(context->command_pool.buffers[index], 0, 1, vertex_buffers, offsets);
+    vkCmdBindIndexBuffer(context->command_pool.buffers[index], blv_rectangle_indices_buffer.buffer, 0, VK_INDEX_TYPE_UINT32);
+
+    // Texture
+    vkCmdBindDescriptorSets(context->command_pool.buffers[index], VK_PIPELINE_BIND_POINT_GRAPHICS, context->graphcis_pipeline.layout, 0, 1,
+                            &context->texture_manager.desccriptor_sets[rect->texture->id], 0, NULL);
+
+    vkCmdDrawIndexed(context->command_pool.buffers[index], BLV_ARRAY_COUNT(blv_rectangle_indices), 1, 0, 0, 0);
+
 }
 
 void blvRectangleDeinit(blvContext* context) {

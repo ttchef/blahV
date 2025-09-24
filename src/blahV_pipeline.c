@@ -54,12 +54,12 @@ BLV_Result blvPipelineInit(blvContext *context, VkVertexInputBindingDescription 
 
     blvShaderCreateInfo vertex_shader_info = {0};
     vertex_shader_info.shader_type = BLV_SHADER_TYPE_VERTEX;
-    vertex_shader_info.filepath = "shaders/spv/texture_vert.spv";
+    vertex_shader_info.filepath = "shaders/spv/default_vert.spv";
     VkShaderModule* vertex_module = blvShaderInit(context, &vertex_shader_info);
 
     blvShaderCreateInfo fragment_shader_info = {0};
     fragment_shader_info.shader_type = BLV_SHADER_TYPE_FRAGMENT;
-    fragment_shader_info.filepath = "shaders/spv/texture_frag.spv";
+    fragment_shader_info.filepath = "shaders/spv/default_frag.spv";
     VkShaderModule* fragment_module = blvShaderInit(context, &fragment_shader_info);
 
     VkPipelineShaderStageCreateInfo shader_stages[2];

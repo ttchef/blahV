@@ -8,8 +8,8 @@
 
 typedef enum {
     BLV_DRAW_TYPE_RECTANGLE = 0,
-    BLV_DRAW_TYPE_SQUARE = 1,
-} BLV_DrawType;
+    BLV_DRAW_TYPE_RECTANGLE_TEXTURE = 1,
+} blvDrawType;
 
 typedef struct {
     VkFence* in_flight_fence;

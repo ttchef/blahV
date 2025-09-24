@@ -11,6 +11,7 @@ blvSampler blvSamplerInit(blvContext *context, blvSamplerCreateInfo* create_info
     blvSampler sampler = {0};
 
     VkSamplerCreateInfo sampler_create_info = {0};
+    sampler_create_info.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
     sampler_create_info.magFilter = VK_FILTER_NEAREST;
     sampler_create_info.minFilter = VK_FILTER_NEAREST;
     sampler_create_info.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
@@ -28,6 +29,7 @@ blvSampler blvSamplerInit(blvContext *context, blvSamplerCreateInfo* create_info
             BLV_SET_ERROR(BLV_VULKAN_SAMPLER_ERROR, "Failed to create vulkan sampler");
             return (blvSampler){0};
         }
+        return sampler;
     }
 
     if (BLV_NOT_ZERO(create_info->mag_filter)) sampler_create_info.magFilter = create_info->mag_filter;
