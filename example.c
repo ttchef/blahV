@@ -1,4 +1,5 @@
 
+#include "blahV/renderer/blahV_rectangle_texture.h"
 #include "blahV/renderer/blahV_texture.h"
 #include <stdio.h>
 #include <blahV/blahV.h>
@@ -53,10 +54,15 @@ int main() {
         blvCameraUpdate(&blv_context, &camera, &delta_time);
         blvUpdate(&blv_context);
 
+        blvRectangleTextureDraw(&blv_context,  -0.5f, -0.5f, 0.25f, 0.25f, blvV4(1.0f, 0.0f, 0.0f, 1.0f), &texture);
+    
+            
+        /*
         blvRectangleDraw(&blv_context, -0.5f, -0.5f, 0.25f, 0.25f, blvV4(1.0f, 0.0f, 0.0f, 1.0f));
         blvRectangleDraw(&blv_context, 0.5f, -0.5f, 0.25f, 0.25f, blvV4(0.0f, 1.0f, 0.0f, 1.0f));
         blvRectangleDraw(&blv_context, -0.5f, 0.5f, 0.25f, 0.25f, blvV4(0.0f, 0.0f, 1.0f, 1.0f));
         blvRectangleDraw(&blv_context, 0.5f, 0.5f, 0.25f, 0.25f, blvV4(1.0f, 1.0f, 1.0f, 1.0f));
+        */
 
 
     }

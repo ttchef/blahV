@@ -1,5 +1,6 @@
 
 #include "blahV/renderer/blahV_renderer.h"
+#include "blahV/renderer/blahV_rectangle_texture.h"
 #include "blahV/vulkan/blahV_commandPool.h"
 #include "blahV/vulkan/blahV_device.h"
 #include "blahV/core/blahV_log.h"
@@ -183,6 +184,9 @@ BLV_Result blvRendererRenderQueue(blvContext *context, uint32_t index) {
         switch (*((uint32_t*)(context->renderer.draw_calls[i]))) {
             case BLV_DRAW_TYPE_RECTANGLE:
                 blvRectangleRender(context, index, (blvRectangle*)context->renderer.draw_calls[i]);
+                break;
+            case BLV_DRAW_TYPE_RECTANGLE_TEXTURE:
+                blvRectangleTextureRender(context, index, (blvRectangleTexture*)context->renderer.draw_calls[i]);
                 break;
             default:
                 break;

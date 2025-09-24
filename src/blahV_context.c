@@ -47,7 +47,7 @@ BLV_Result blvVulkanInit(blvContext *context) {
 
     if (blvTextureManagerInit(context) != BLV_OK) return BLV_ERROR;
 
-    BLV_LOG(BLV_LOG_DEBUG, "Created Texture Manager!\n");
+    BLV_LOG(BLV_LOG_DEBUG, "Created Texture Manager\n");
 
     context->sampler_default = blvSamplerInit(context, NULL);
 
