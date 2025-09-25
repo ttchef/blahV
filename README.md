@@ -108,6 +108,5 @@ sudo make install BUILD=shared # For shared lib
  - Add Draw Cube or smth
  - Textures 
  - Organize c files in folders
- - Combine texture and normal rectangle into 1 c file
-
+ - Create a new texture pipeline with pipeline layout having 2 descriptor layout etc.
 

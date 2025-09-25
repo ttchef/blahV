@@ -153,7 +153,7 @@ void blvRectangleTextureRender(blvContext *context, uint32_t index, blvRectangle
     vkCmdBindIndexBuffer(context->command_pool.buffers[index], blv_rectangle_indices_buffer.buffer, 0, VK_INDEX_TYPE_UINT32);
 
     // Texture
-    vkCmdBindDescriptorSets(context->command_pool.buffers[index], VK_PIPELINE_BIND_POINT_GRAPHICS, context->graphcis_pipeline.layout, 0, 1,
+    vkCmdBindDescriptorSets(context->command_pool.buffers[index], VK_PIPELINE_BIND_POINT_GRAPHICS, context->graphcis_pipeline.layout, 1, 1,
                             &context->texture_manager.desccriptor_sets[rect->texture->id], 0, NULL);
 
     vkCmdDrawIndexed(context->command_pool.buffers[index], BLV_ARRAY_COUNT(blv_rectangle_indices), 1, 0, 0, 0);

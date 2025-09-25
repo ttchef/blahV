@@ -29,6 +29,10 @@ BLV_Result blvVulkanInit(blvContext *context) {
 
     BLV_LOG(BLV_LOG_DEBUG, "Created Swapchain\n");
 
+    if (blvTextureManagerInit(context) != BLV_OK) return BLV_ERROR;
+
+    BLV_LOG(BLV_LOG_DEBUG, "Created Texture Manager\n");
+
     if (blvRectangleInit(context) != BLV_OK) return BLV_ERROR;
 
     BLV_LOG(BLV_LOG_DEBUG, "Created Rectangle Buffers\n");
@@ -44,10 +48,6 @@ BLV_Result blvVulkanInit(blvContext *context) {
     if (blvRendererInit(context) != BLV_OK) return BLV_ERROR;
 
     BLV_LOG(BLV_LOG_DEBUG, "Created Renderer\n");
-
-    if (blvTextureManagerInit(context) != BLV_OK) return BLV_ERROR;
-
-    BLV_LOG(BLV_LOG_DEBUG, "Created Texture Manager\n");
 
     context->sampler_default = blvSamplerInit(context, NULL);
 

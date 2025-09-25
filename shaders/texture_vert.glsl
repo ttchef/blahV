@@ -1,7 +1,7 @@
 
 #version 450 core 
 
-layout (binding = 0) uniform uniform_matrix_object {
+layout (set = 0, binding = 0) uniform uniform_matrix_object {
     mat4 view_proj;
 } uniform_matrix;
 

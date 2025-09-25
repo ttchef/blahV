@@ -216,10 +216,15 @@ BLV_Result blvPipelineInit(blvContext *context, VkVertexInputBindingDescription 
     push_constant_range.offset = 0;
     push_constant_range.size = sizeof(blvModelColorPushConstant);
 
+    VkDescriptorSetLayout descriptor_layouts[] = {
+        context->graphcis_pipeline.descriptor_layout,
+        context->texture_manager.descriptor_layout,
+    };
+
     VkPipelineLayoutCreateInfo layout_info = {0};
     layout_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    layout_info.setLayoutCount = 1;
-    layout_info.pSetLayouts = &context->graphcis_pipeline.descriptor_layout;
+    layout_info.setLayoutCount = 2;
+    layout_info.pSetLayouts = descriptor_layouts;
     layout_info.pushConstantRangeCount = 1;
     layout_info.pPushConstantRanges = &push_constant_range;
     
