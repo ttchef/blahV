@@ -6,6 +6,7 @@
 #include "blahV/core/blahV_log.h"
 #include "blahV/vulkan/blahV_pipeline.h"
 #include "blahV/renderer/blahV_renderer.h"
+#include "blahV/vulkan/blahV_pipeline_manager.h"
 #include "blahV/vulkan/blahV_sampler.h"
 #include "blahV/vulkan/blahV_surface.h"
 #include "blahV/vulkan/blahV_swapchain.h"
@@ -37,7 +38,7 @@ BLV_Result blvVulkanInit(blvContext *context) {
 
     BLV_LOG(BLV_LOG_DEBUG, "Created Rectangle Buffers\n");
 
-    if (blvPipelineInit(context, blv_rectangle_binding_description, blv_rectangle_attribute_description) != BLV_OK) return BLV_ERROR;
+    if (blvPipelineManagerInit(context) != BLV_OK) return BLV_ERROR;
 
     BLV_LOG(BLV_LOG_DEBUG, "Created Graphcis Pipeline\n");
 

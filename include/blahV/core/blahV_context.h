@@ -15,6 +15,7 @@
 #include "blahV_globals.h"
 #include "blahV/vulkan/blahV_sampler.h"
 #include "blahV/vulkan/blahV_texture_manager.h"
+#include "blahV/vulkan/blahV_pipeline_manager.h"
 
 // TODO: temporär
 #include "blahV/vulkan/blahV_image.h"
@@ -27,7 +28,7 @@ struct blvContext {
     blvQueue graphics_queue;
     blvSurface surface;
     blvSwapchain swapchain;
-    blvPipeline graphcis_pipeline;
+    blvPipelineManager pipeline_manager;
     blvCommandPool command_pool;
     blvRenderer renderer;
     blvTextureManager texture_manager;

@@ -11,6 +11,7 @@
 typedef struct {
     VkBuffer buffer;
     VkDeviceMemory memory;
+    size_t size; // in bytes
 } blvBuffer;
 
 // Size in bytes btw

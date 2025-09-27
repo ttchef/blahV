@@ -1,0 +1,12 @@
+
+#ifndef BLAHV_UNIFORM_BUFFER_MANAGER_H
+#define BLAHV_UNIFORM_BUFFER_MANAGER_H
+
+#include "blahV/vulkan/blahV_buffer.h"
+
+typedef struct {
+    size_t count;
+    blvBuffer* ubos;
+} blvUniformBufferManager;
+
+#endif
