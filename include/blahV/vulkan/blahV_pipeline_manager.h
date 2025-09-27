@@ -10,7 +10,7 @@ typedef struct {
     uint32_t pipeline_count;
 } blvPipelineManager;
 
-blvPipelineManagerInit(blvContext* context);
-blvPipelineManagerDeinit(blvContext* context);
+BLV_Result blvPipelineManagerInit(blvContext* context);
+void blvPipelineManagerDeinit(blvContext* context);
 
 #endif

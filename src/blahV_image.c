@@ -74,6 +74,7 @@ void blvImageDeinit(blvContext *context, blvImage *image) {
 }
 
 uint8_t* blvImageLoadStb(const char *path, int32_t *width, int32_t *height, int32_t* channels, int32_t desired_channels) {
+    stbi_set_flip_vertically_on_load(1);
     return stbi_load(path, width, height, channels, desired_channels);
 }
 
